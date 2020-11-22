@@ -1,16 +1,7 @@
 # Idle Hands
-Manages user inactivity across all browser windows.
+Manage user inactivity across all browser windows with automatic redirect and dialog prompt.
 
 This is a _**zero-dependency**_ rewrite of the [jQuery Idle Hands plugin](https://github.com/totallyquiche/jquery-idle-hands) written in _**pure JavaScript**_.
-
-## Compatibility
-
-As of 06/2020, Idle Hands has been tested on the latest versions of the following browsers:
-* Firefox
-* Google Chrome
-* Safari
-* Internet Explorer
-* Edge
 
 ## Usage
 ```html
