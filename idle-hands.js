@@ -191,9 +191,6 @@ const idleHands = {
 
                 container.id = this.id;
                 container.style.display = 'none';
-                container.style.position = 'absolute';
-                container.style.width = '100%';
-                container.style.height = '100%';
 
                 dialogContainer.id = this.id + '-dialog';
 
@@ -219,7 +216,6 @@ const idleHands = {
             }
         },
         show: function () {
-            document.getElementsByTagName('body')[0].style.overflow = 'hidden';
             document.title = idleHands.settings.documentTitle;
             document.getElementById(this.element.id).style.display = 'block';
         },
