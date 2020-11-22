@@ -1,5 +1,7 @@
 const idleHands = {
     start: function (userSettings) {
+        document.addEventListener('click', this.reset.bind(this));
+
         this.settings = this.getSettings(userSettings);
 
         this.heartbeat.start(
@@ -8,7 +10,11 @@ const idleHands = {
             (this.settings.heartRate * 1000)
         );
 
-        this.inactivity.start(this.settings.maxInactivitySeconds);
+        this.inactivity.start(
+            this.settings.maxInactivitySeconds,
+            this.settings.inactivityDialogDuration,
+            this.dialog
+        );
 
         this.dialog.init();
     },
@@ -55,41 +61,37 @@ const idleHands = {
     inactivity: {
         interval: undefined,
         startTime: undefined,
-        start: function (maxInactivitySeconds) {
-            this.interval = setInterval(this.check.bind(this, maxInactivitySeconds), 1000);
+        start: function (maxInactivitySeconds, inactivityDialogDuration, dialog) {
+            this.interval = setInterval(this.check.bind(this, maxInactivitySeconds,  inactivityDialogDuration, dialog), 1000);
             this.startTime = (new Date).getTime();
         },
-        stop: function () {
-            clearInterval(this.interval);
+        stop: function (callback) {
+            clearInterval(this.interval, callback);
         },
-        reset: function () {
+        reset: function (maxInactivitySeconds, inactivityDialogDuration, dialog) {
             this.stop();
-            this.start();
+            this.start(maxInactivitySeconds, inactivityDialogDuration, dialog);
         },
-        check: function (maxInactivitySeconds) {
-            if (Math.floor(((new Date).getTime() - this.startTime) / 1000) >= maxInactivitySeconds) {
-                console.log('TIMED OUT!');
+        check: function (maxInactivitySeconds, inactivityDialogDuration, dialog) {
+            let inactivityTime = Math.floor(((new Date).getTime() - this.startTime) / 1000);
+
+            if (inactivityTime >= maxInactivitySeconds) {
+                console.log('Redirecting');
+                this.stop();
+            } else if (inactivityTime >= inactivityDialogDuration) {
+                dialog.show();
+
+                dialogElement = document.getElementById(dialog.element.id);
+
+                dialogElement.innerText = (maxInactivitySeconds - inactivityTime);
+            } else {
+                dialog.hide();
             }
-        }
-    },
-    storage: {
-        setup: function () {
-
-        },
-        set: function () {
-
-        },
-        get: function () {
-
-        },
-        reset: function () {
-
         }
     },
     dialog: {
         init: function () {
             this.element.create();
-            this.show();
         },
         element: {
             id: 'idle-hands-dialog',
@@ -114,7 +116,12 @@ const idleHands = {
         console.log(this.settings.inactivityLogoutUrl);
     },
     reset: function () {
-        this.inactivity.reset();
+        this.inactivity.reset(
+            this.settings.maxInactivitySeconds,
+            this.settings.inactivityDialogDuration,
+            this.dialog
+        );
+
         this.dialog.hide();
     }
 }
