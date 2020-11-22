@@ -8,7 +8,7 @@ const idleHands = {
             (this.settings.heartRate * 1000)
         );
 
-        this.inactivity.start();
+        this.inactivity.start(this.settings.maxInactivitySeconds);
 
         this.dialog.init();
     },
@@ -54,8 +54,10 @@ const idleHands = {
     },
     inactivity: {
         interval: undefined,
-        start: function () {
-            this.interval = setInterval(this.check.bind(this), 1000);
+        startTime: undefined,
+        start: function (maxInactivitySeconds) {
+            this.interval = setInterval(this.check.bind(this, maxInactivitySeconds), 1000);
+            this.startTime = (new Date).getTime();
         },
         stop: function () {
             clearInterval(this.interval);
@@ -64,8 +66,10 @@ const idleHands = {
             this.stop();
             this.start();
         },
-        check: function () {
-            //
+        check: function (maxInactivitySeconds) {
+            if (Math.floor(((new Date).getTime() - this.startTime) / 1000) >= maxInactivitySeconds) {
+                console.log('TIMED OUT!');
+            }
         }
     },
     storage: {
@@ -105,5 +109,12 @@ const idleHands = {
         hide: function () {
             document.getElementById(this.element.id).style.display = 'none';
         }
+    },
+    logout: function () {
+        console.log(this.settings.inactivityLogoutUrl);
+    },
+    reset: function () {
+        this.inactivity.reset();
+        this.dialog.hide();
     }
 }
