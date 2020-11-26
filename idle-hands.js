@@ -85,42 +85,26 @@ const idleHands = {
         }
     },
     storage: {
-        write: function (cookieName, value, expiration) {
-            let cookieContent = idleHands.settings.localStoragePrefix + '.' + cookieName + '=' + value + '; SameSite=Strict;';
-
-            if (expiration) {
-                cookieContent += 'expires=' . expiration;
-            }
-
-            document.cookie = cookieContent;
+        write: function (key, value) {
+            localStorage.setItem(key, value);
         },
-        get: function (cookieName) {
-            let cookies = document.cookie.split(' ');
-            let fullyQualifiedCookieName = idleHands.settings.localStoragePrefix + '.' + cookieName;
-            let cookieValue = false;
-
-            cookies.forEach((cookie) => {
-                pair = cookie.split('=');
-
-                if (pair[0] == fullyQualifiedCookieName) {
-                    cookieValue = pair[1];
-                }
-            });
-
-            return cookieValue;
+        get: function (key) {
+            return localStorage.getItem(key);
         },
-        destroy: function (cookieName) {
-            this.write(cookieName, '', ((new Date).getDate() - 1));
+        destroy: function (key) {
+            localStorage.removeItem(key);
         }
     },
     inactivity: {
         interval: undefined,
         start: function (maxInactivitySeconds, inactivityDialogDuration, dialog, inactivityLogoutUrl) {
             this.interval = setInterval(this.check.bind(this, maxInactivitySeconds,  inactivityDialogDuration, dialog, inactivityLogoutUrl), 1000);
-            idleHands.storage.write('startTime', (new Date).getTime());
+            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());
         },
-        stop: function () {
-            clearInterval(this.interval);
+        stop: function (callback) {
+            idleHands.storage.destroy('startTime');
+
+            clearInterval(this.interval, callback);
 
             return this;
         },
@@ -154,8 +138,9 @@ const idleHands = {
             }
         },
         logout: function (logoutUrl) {
-            idleHands.storage.destroy('startTime');
-            window.location.href = logoutUrl;
+            this.stop((function () {
+                window.location.href = logoutUrl;
+            })(logoutUrl));
         }
     },
     dialog: {
