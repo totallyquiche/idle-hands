@@ -99,7 +99,7 @@ const idleHands = {
         interval: undefined,
         start: function (maxInactivitySeconds, inactivityDialogDuration, dialog, inactivityLogoutUrl) {
             this.interval = setInterval(this.check.bind(this, maxInactivitySeconds,  inactivityDialogDuration, dialog, inactivityLogoutUrl), 1000);
-            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());            idleHands.storage.write('startTime', (new Date).getTime());
+            idleHands.storage.write('startTime', (new Date).getTime());
         },
         stop: function (callback) {
             idleHands.storage.destroy('startTime');
