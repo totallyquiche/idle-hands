@@ -57,7 +57,7 @@ const idleHands = {
             heartRate: 300,
             inactivityLogoutUrl: 'https://www.google.com',
             inactivityDialogDuration: 45,
-            localStoragePrefix: null,
+            sessionStoragePrefix: null,
             logoutNowButtonText: 'Logout Now',
             manualLogoutUrl: null,
             maxInactivitySeconds: 600,
@@ -67,7 +67,7 @@ const idleHands = {
         let mergedSettings = Object.assign(defaultSettings, userSettings);
 
         mergedSettings.documentTitle = mergedSettings.documentTitle || mergedSettings.dialogTitle;
-        mergedSettings.localStoragePrefix = mergedSettings.localStoragePrefix || mergedSettings.applicationId;
+        mergedSettings.sessionStoragePrefix = mergedSettings.sessionStoragePrefix || mergedSettings.applicationId;
         mergedSettings.manualLogoutUrl = mergedSettings.manualLogoutUrl || mergedSettings.inactivityLogoutUrl;
 
         return mergedSettings;
@@ -86,13 +86,13 @@ const idleHands = {
     },
     storage: {
         write: function (key, value) {
-            localStorage.setItem(key, value);
+            sessionStorage.setItem(key, value);
         },
         get: function (key) {
-            return localStorage.getItem(key);
+            return sessionStorage.getItem(key);
         },
         destroy: function (key) {
-            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
         }
     },
     inactivity: {
