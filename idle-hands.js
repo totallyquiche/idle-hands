@@ -1,3 +1,5 @@
+'use strict'
+
 const idleHands = {
     start: function (userSettings) {
         this.settings = this.getSettings(userSettings);
