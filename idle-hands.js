@@ -6,9 +6,9 @@ const idleHands = {
         maximumIdleDuration: ((60 * 1000) * 60),
         promptDuration: (30 * 1000),
         heartbeatInterval: ((60 * 1000) * 30),
-        redirectUrl: window.location.href,
         heartbeatUrl: window.location.href,
-        logOutUrl: window.location.href,
+        automaticLogOutUrl: window.location.href,
+        manualLogOutUrl: window.location.href,
         containerElement: document.getElementsByTagName('body')[0],
         eventListeners: ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'],
         documentTitle: 'Session Expiration Warning',
@@ -17,10 +17,11 @@ const idleHands = {
         dialogCountDownMessage: 'Time remaining: ',
         dialogStayLoggedInButtonText: 'Stay Logged In',
         dialogLogOutButtonText: 'Log Out Now',
-        dialogZindex: 9999,
+        overlayZindex: 9999,
         debug: false,
     },
     originalDocumentTitle: null,
+    originalContainerElementOverflow: null,
     event: null,
     tickInterval: null,
     heartbeatInterval: null,
@@ -81,9 +82,12 @@ const idleHands = {
         this.stop();
         this.start();
     },
-    logOut: function () {
+    logOut: function (manual = false) {
         this.stop(false);
-        this.redirect();
+
+        const url = manual ? this.config.manualLogOutUrl : this.config.automaticLogOutUrl;
+
+        this.redirect(url);
     },
     tick: function () {
         const remainingTime = this.getTimeRemaining();
@@ -135,6 +139,9 @@ const idleHands = {
     buildOverlay: function () {
         this.originalDocumentTitle = document.title;
 
+        this.originalContainerElementOverflow = this.config.containerElement.style.overflow;
+        this.config.containerElement.style.setProperty('overflow', 'hidden', 'important');
+
         document.title = this.config.documentTitle;
 
         this.elements.overlayContainerElement = document.createElement('div');
@@ -166,7 +173,9 @@ const idleHands = {
         this.elements.overlayContainerElement.id = 'idle-hands-overlay-container';
         this.elements.overlayContainerElement.style.setProperty('width', '100%', 'important');
         this.elements.overlayContainerElement.style.setProperty('height', '100%', 'important');
-        this.elements.overlayContainerElement.style.setProperty('position', 'absolute', 'important');
+        this.elements.overlayContainerElement.style.setProperty('position', 'fixed', 'important');
+        this.elements.overlayContainerElement.style.setProperty('top', '0', 'important');
+        this.elements.overlayContainerElement.style.setProperty('left', '0', 'important');
         this.elements.overlayContainerElement.style.setProperty('z-index', this.config.dialogZindex, 'important');
         this.elements.overlayContainerElement.style.setProperty('background', 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNksAcAAEUAQRtOwGEAAAAASUVORK5CYII=")', 'important');
 
@@ -209,7 +218,7 @@ const idleHands = {
         this.elements.dialogStayLoggedInButtonElement.style.setProperty('margin-left', '7%', 'important');
 
         this.elements.dialogLogOutButtonElement.innerText = this.config.dialogLogOutButtonText;
-        this.elements.dialogLogOutButtonElement.addEventListener('click', () => this.logOut());
+        this.elements.dialogLogOutButtonElement.addEventListener('click', () => this.logOut(true));
         this.elements.dialogLogOutButtonElement.style.setProperty('width', '40%', 'important');
         this.elements.dialogLogOutButtonElement.style.setProperty('padding', '8px 0', 'important');
         this.elements.dialogLogOutButtonElement.style.setProperty('margin', '10px', 'important');
@@ -232,6 +241,8 @@ const idleHands = {
     destroyOverlay: function () {
         document.title = this.originalDocumentTitle;
 
+        this.config.containerElement.style.overflow = this.originalContainerElementOverflow;
+
         this.config.containerElement.removeChild(this.elements.overlayContainerElement);
         this.elements.overlayContainerElement = null;
     },
@@ -239,10 +250,10 @@ const idleHands = {
         this.elements.overlayContainerElement.removeChild(this.elements.dialogContainerElement);
         this.elements.overlayContainerElement = null;
     },
-    redirect: function () {
+    redirect: function (url) {
         this.config.debug ?
-            console.log('Redirect: ' + this.config.redirectUrl) :
-            window.location.replace(this.config.redirectUrl);
+            console.log('Redirect: ' + url) :
+            window.location.replace(url);
     },
     heartbeat: function () {
         this.config.debug ?
