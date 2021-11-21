@@ -38,6 +38,12 @@ const idleHands = {
     getStartTime: function() {
         return localStorage.getItem(this.config.applicationId + '_startTime');
     },
+    setLoggedOutStatus: function (loggedOutStatus) {
+        localStorage.setItem(this.config.applicationId + '_loggedOutStatus', loggedOutStatus);
+    },
+    getLoggedOutStatus: function() {
+        return localStorage.getItem(this.config.applicationId + '_loggedOutStatus');
+    },
     getCurrentTime: () => (new Date).getTime(),
     getIdleTime: function () {
         return this.getCurrentTime() - this.getStartTime();
@@ -50,6 +56,7 @@ const idleHands = {
             this.config = {...this.defaultConfig, ...config};
         }
 
+        this.setLoggedOutStatus(false);
         this.event = this.reset.bind(this);
         this.addEventListeners();
         this.setStartTime();
@@ -87,6 +94,8 @@ const idleHands = {
         this.start();
     },
     logOut: function (manual = false) {
+        this.setLoggedOutStatus(true);
+
         document.title = this.config.loggingOutDocumentTitle;
 
         this.stop(false);
@@ -122,7 +131,7 @@ const idleHands = {
             this.destroyOverlay();
         }
 
-        if (remainingSeconds <= 0) {
+        if (remainingSeconds <= 0 || this.getLoggedOutStatus() === 'true') {
             this.logOut()
         }
     },
