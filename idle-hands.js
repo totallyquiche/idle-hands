@@ -3,6 +3,7 @@
 const idleHands = {
     config: null,
     defaultConfig: {
+        applicationId: window.location.hostname,
         maximumIdleDuration: ((60 * 1000) * 60),
         promptDuration: (30 * 1000),
         heartbeatInterval: ((60 * 1000) * 30),
@@ -17,6 +18,7 @@ const idleHands = {
         dialogCountDownMessage: 'Time remaining: ',
         dialogStayLoggedInButtonText: 'Stay Logged In',
         dialogLogOutButtonText: 'Log Out Now',
+        loggingOutDocumentTitle: 'Logging Out...',
         overlayZindex: 9999,
         debug: false,
     },
@@ -31,9 +33,11 @@ const idleHands = {
         dialogCountDownElement: document.createElement('span'),
     },
     setStartTime: function () {
-        localStorage.setItem('startTime', this.getCurrentTime());
+        localStorage.setItem(this.config.applicationId + '_startTime', this.getCurrentTime());
     },
-    getStartTime: () => localStorage.getItem('startTime'),
+    getStartTime: function() {
+        return localStorage.getItem(this.config.applicationId + '_startTime');
+    },
     getCurrentTime: () => (new Date).getTime(),
     getIdleTime: function () {
         return this.getCurrentTime() - this.getStartTime();
@@ -83,6 +87,8 @@ const idleHands = {
         this.start();
     },
     logOut: function (manual = false) {
+        document.title = this.config.loggingOutDocumentTitle;
+
         this.stop(false);
 
         const url = manual ? this.config.manualLogOutUrl : this.config.automaticLogOutUrl;
