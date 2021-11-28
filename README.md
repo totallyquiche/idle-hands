@@ -3,22 +3,49 @@ Manage user inactivity across all browser windows with automatic redirect and di
 
 This is a _**zero-dependency**_ rewrite of the [jQuery Idle Hands plugin](https://github.com/totallyquiche/jquery-idle-hands) written in _**pure JavaScript**_.
 
-## Usage
+## Basic Usage
 ```html
 <script>
-    idleHands.start();
+    window.onload = () => {
+        idleHands.start({
+            logOutUrl: '[LOG_OUT_URL]'
+        });
+    }
 </script>
 ```
 
-### With Custom Settings
+### Example
+```html
+<script>
+    window.onload = () => {
+        idleHands.start({
+            logOutUrl: 'https://abc.xyz/logout'
+        });
+    }
+</script>
+```
+
+## Advanced Usage
 ```html
 <script>
     idleHands.start({
-        applicationId: 'my_application',
-        heartRate: 5,
-        inactivityDialogDuration: 10,
-        inactivityLogoutUrl: 'https://www.google.com',
-        maxInactivitySeconds: 15
+        applicationId: '[APPLICATION_ID]',
+        heartbeatUrl: '[HEART_BEAT_URL]',
+        manualLogOutUrl: '[MANUAL_LOG_OUT_URL]',
+        automaticLogOutUrl: '[AUTOMATIC_LOG_OUT_URL]',
+        maxInactivitySeconds: [MAXIMUM_IDLE_DURATION]
+    });
+</script>
+```
+
+### Example
+```html<script>
+    idleHands.start({
+        applicationId: 'idle_hands',
+        heartbeatUrl: 'https://abc.xyz/logout',
+        manualLogOutUrl: 'https://abc.xyz/logout/?type=manual',
+        automaticLogOutUrl: 'https://abc.xyz/logout/?type=automatic',
+        maxInactivitySeconds: (60 * 60) // 1 hour
     });
 </script>
 ```
@@ -26,19 +53,22 @@ This is a _**zero-dependency**_ rewrite of the [jQuery Idle Hands plugin](https:
 ## Settings
 |Name|Default Value|Description|
 |---|---|--|
-|`activityEvents`|`'click keypress scroll wheel mousewheel mousemove'`|This is a string of DOM event types which count as user activity.|
-|`applicationId`|`'idle-hands'`|This is a unique identifier used to namespace local storage and HTML classes/IDs. It should be changed to something unique to your application.|
-|`dialogMessage`|`'Your session is about to expire due to inactivity.'`|This is the message that appears inside of the inactivity dialog above the timer.|
-|`dialogTimeRemainingLabel`|`'Time remaining'`| This is the message that appears in the inactivity dialog before the number of seconds remaining.|
-|`dialogTitle`|`'Session Expiration Warning'`|This is the message that appears at the very top of the inactivity dialog.|
-|`documentTitle`|`null`|This is the message that appears at the top of the browser tab or window. When left `null`, this will default to `dialogTitle`.|
-|`heartbeatCallback`|`null`|This is the function that will be called after every successful request to the heartbeat URL. The following parameters are passed in from the `$.get()` request: `data`, `textStatus`, `jqXHR`.|
-|`heartbeatUrl`|`window.location.href`|This is the "keep-alive" URL. Idle Hands will make an AJAX request to this URL once every `heartRate` number of seconds. This can be used to prevent your application session from expiring before the inactivity timer finishes counting down.|
-|`heartRate`|`300`|This is how often Idle Hands will make an AJAX request to `heartbeatUrl`.|
-|`inactivityLogoutUrl`|`'https://www.google.com'`|This is the URL that users will be redirected to if the inactivity dialog timer reaches 0 seconds.|
-|`inactivityDialogDuration`|`45`|This is how before a user is logged out that the inactivity dialog will display for.|
-|`localStoragePrefix`|`null`|Keys in key/value pairs saved in the browser are prefixed with this value to help prevent conflicts with other applications storing data in the browser. When left `null`, this defaults to `applicationId`.|
-|`logoutNowButtonText`|`'Logout Now'`|This is the text that will display on the logout button in the inactivity dialog.|
-|`manualLogoutUrl`|`null`|This is the URL that users will be redirected to if they click the logout button on the inactivity dialog. When left `null`, this will default to `inactivityLogoutUrl`.|
-|`maxInactivitySeconds`|`60`|This is the number of seconds a user can remain inactive before they are automatically redirected to `inactivityLogoutUrl`.|
-|`stayLoggedInButtonText`|`'Stay Logged In'`|This is the text that will display on the reset button in the inactivity dialog.|
+|`applicationId`|`window.location.hostname`|A unique identifier used to avoid conflicts with other sites using Idle Hands.|
+|`automaticLogOutUrl`|`window.location.hostname`|The URL the user will be automatically redirected to when the `maximumIdleDuration` is reached.|
+|`containerElement`|`body`|The HTML element the Idle Hands overlay is attached to.|
+|`debug`|`false`|Indicates whether debug mode should be active, preventing redirects and instead logging activity to the console.|
+|`dialogCountDownMessage`|`Time remaining: `|The text to display before the timer on the inactivity prompt|
+|`dialogLogOutButtonText`|`Log Out Now`|The text to display on the inactivity prompt button that logs the user out.|
+|`dialogMessage`|`Your session is about to expire due to inactivity.`|The message to display in the inactivity prompt.|
+|`dialogStayLoggedInButtonText`|`Stay Logged In`|The text to display on the inactivity prompt button that keeps the user logged in.|
+|`dialogTitle`|`Session Expiration Warning`|The text to display in th inactivity prompt header.|
+|`documentTitle`|`Session Expiration Warning`|The text to display in the browser tab/window while the inactivity prompt is showing.|
+|`eventListeners`|`['click', 'keypress', 'scroll', 'wheel', 'mousewheel']`|An array of JavaScript events which reset the inactivity timer.|
+|`heartbeatInterval`|`(30 * 1000)` (30 seconds)|How often a `GET` request should be sent to the `heartbeatUrl`. This works is intended to keep the user logged into the application, allowing Idle Hands to handle logging out.|
+|`heartbeatUrl`|`window.location.href`|A URL a `GET` request can be sent to in order to keep the user logged into the application.|
+|`logOutUrl`|`null`|The URL which a user should be redirected to when Idle Hands logs them out. This overrides `automaticLogOutUrl` and `manualLogOutUrl`.|
+|`loggingOutDocumentTitle`|`Logging Out...`|The text to display in the browser tab/window while Idle Hands is redirecting the user to the logout URL.|
+|`manualLogOutUrl`|`window.location.href`|The URL the user will be redirected to when they click the log out button on the inactivity prompt.|
+|`maximumIdleDuration`|`((60 * 1000) * 60)` (60 minutes)|How long a user is allowed to remain inactive before they are logged out. This includes the time the inactivity prompt is displayed.|
+|`overlayZIndex`|`9999`|The `z-index` of the inactivity overlay. Increase this if other HTML elements appear on top of the overlay.|
+|`promptDuration`|`(30 * 1000)` (30 seconds)|How long the inactivity prompt should be displayed before the user is logged out.|
