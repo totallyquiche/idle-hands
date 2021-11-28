@@ -8,6 +8,7 @@ const idleHands = {
         promptDuration: (30 * 1000),
         heartbeatInterval: ((60 * 1000) * 30),
         heartbeatUrl: window.location.href,
+        logOutUrl: null,
         automaticLogOutUrl: window.location.href,
         manualLogOutUrl: window.location.href,
         containerElement: document.getElementsByTagName('body')[0],
@@ -101,12 +102,12 @@ const idleHands = {
 
         this.stop(false);
 
-        const logoutType = this.getLogOutType();
-
         let url;
 
-        if (logoutType === 'manual') {
-            url = this.config.manualLogOutUrl;
+        if (this.config.logOutUrl !== null) {
+            url = $this.config.logOutUrl;
+        } else if (this.getLogOutType() === 'manual') {
+                url = this.config.manualLogOutUrl;
         } else {
             url = this.config.automaticLogOutUrl;
         }
