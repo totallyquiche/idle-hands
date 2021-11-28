@@ -38,11 +38,14 @@ const idleHands = {
     getStartTime: function() {
         return localStorage.getItem(this.config.applicationId + '_startTime');
     },
-    setLoggedOutStatus: function (loggedOutStatus) {
-        localStorage.setItem(this.config.applicationId + '_loggedOutStatus', loggedOutStatus);
+    setLogOutType: function (logOutType) {
+        localStorage.setItem(this.config.applicationId + '_logOutType', logOutType);
     },
-    getLoggedOutStatus: function() {
-        return localStorage.getItem(this.config.applicationId + '_loggedOutStatus');
+    unsetLogOutType: function () {
+        localStorage.removeItem(this.config.applicationId + '_logOutType');
+    },
+    getLogOutType: function() {
+        return localStorage.getItem(this.config.applicationId + '_logOutType');
     },
     getCurrentTime: () => (new Date).getTime(),
     getIdleTime: function () {
@@ -56,7 +59,7 @@ const idleHands = {
             this.config = {...this.defaultConfig, ...config};
         }
 
-        this.setLoggedOutStatus(false);
+        this.unsetLogOutType();
         this.event = this.reset.bind(this);
         this.addEventListeners();
         this.setStartTime();
@@ -93,14 +96,20 @@ const idleHands = {
         this.stop();
         this.start();
     },
-    logOut: function (manual = false) {
-        this.setLoggedOutStatus(true);
-
+    logOut: function () {
         document.title = this.config.loggingOutDocumentTitle;
 
         this.stop(false);
 
-        const url = manual ? this.config.manualLogOutUrl : this.config.automaticLogOutUrl;
+        const logoutType = this.getLogOutType();
+
+        let url;
+
+        if (logoutType === 'manual') {
+            url = this.config.manualLogOutUrl;
+        } else {
+            url = this.config.automaticLogOutUrl;
+        }
 
         this.redirect(url);
     },
@@ -131,7 +140,10 @@ const idleHands = {
             this.destroyOverlay();
         }
 
-        if (remainingSeconds <= 0 || this.getLoggedOutStatus() === 'true') {
+        if (remainingSeconds <= 0 || this.getLogOutType() !== null) {
+            if (this.getLogOutType() === null) {
+                this.setLogOutType('automatic');
+            }
             this.logOut()
         }
     },
@@ -233,7 +245,10 @@ const idleHands = {
         this.elements.dialogStayLoggedInButtonElement.style.setProperty('margin-left', '7%', 'important');
 
         this.elements.dialogLogOutButtonElement.innerText = this.config.dialogLogOutButtonText;
-        this.elements.dialogLogOutButtonElement.addEventListener('click', () => this.logOut(true));
+        this.elements.dialogLogOutButtonElement.addEventListener('click', () => {
+            this.setLogOutType('manual');
+            this.logOut();
+        });
         this.elements.dialogLogOutButtonElement.style.setProperty('width', '40%', 'important');
         this.elements.dialogLogOutButtonElement.style.setProperty('padding', '8px 0', 'important');
         this.elements.dialogLogOutButtonElement.style.setProperty('margin', '10px', 'important');
