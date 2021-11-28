@@ -14,7 +14,7 @@ const idleHands = {
         dialogTitle: 'Session Expiration Warning',
         documentTitle: 'Session Expiration Warning',
         eventListeners: ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'],
-        heartbeatInterval: (30 * 1000),
+        heartbeatInterval: ((60 * 1000) * 30),
         heartbeatUrl: window.location.href,
         logOutUrl: null,
         loggingOutDocumentTitle: 'Logging Out...',
