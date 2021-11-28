@@ -1,233 +1,294 @@
+'use strict'
+
 const idleHands = {
-    start: function (userSettings) {
-        this.settings = this.getSettings(userSettings);
-        this.eventListener = this.reset.bind(this);
-
-        this.storage.write(
-            'startTime',
-            (new Date).getTime()
-        );
-
-        this.addEventListeners(
-            document,
-            this.settings.activityEvents,
-            this.eventListener
-        );
-
-        this.heartbeat.start(
-            this.settings.heartbeatUrl,
-            this.settings.heartbeatCallback,
-            (this.settings.heartRate * 1000)
-        );
-
-        this.inactivity.start(
-            this.settings.maxInactivitySeconds,
-            this.settings.inactivityDialogDuration,
-            this.dialog,
-            this.settings.inactivityLogoutUrl
-        );
-
-        this.dialog.init(
-            this.settings.manualLogoutUrl,
-            this.reset.bind(this)
-       );
+    config: null,
+    defaultConfig: {
+        applicationId: window.location.hostname,
+        automaticLogOutUrl: window.location.href,
+        containerElement: document.getElementsByTagName('body')[0],
+        debug: false,
+        dialogCountDownMessage: 'Time remaining: ',
+        dialogLogOutButtonText: 'Log Out Now',
+        dialogMessage: 'Your session is about to expire due to inactivity.',
+        dialogStayLoggedInButtonText: 'Stay Logged In',
+        dialogTitle: 'Session Expiration Warning',
+        documentTitle: 'Session Expiration Warning',
+        eventListeners: ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'],
+        heartbeatInterval: ((60 * 1000) * 30),
+        heartbeatUrl: window.location.href,
+        logOutUrl: null,
+        loggingOutDocumentTitle: 'Logging Out...',
+        manualLogOutUrl: window.location.href,
+        maximumIdleDuration: ((60 * 1000) * 60),
+        overlayZindex: 9999,
+        promptDuration: (30 * 1000),
     },
-    initialDocumentTitle: document.title,
-    eventListener: undefined,
-    addEventListeners: function (target, types, listener) {
-        types.split(' ').forEach(type => {
-            target.addEventListener(type, listener);
-        });
+    originalDocumentTitle: null,
+    originalContainerElementOverflow: null,
+    event: null,
+    tickInterval: null,
+    heartbeatInterval: null,
+    elements: {
+        overlayContainerElement: null,
+        dialogContainerElement: null,
+        dialogCountDownElement: document.createElement('span'),
     },
-    removeEventListeners: function (target, types, listener) {
-        types.split(' ').forEach(type => {
-            target.removeEventListener(type, listener);
-        });
+    setStartTime: function () {
+        localStorage.setItem(this.config.applicationId + '_startTime', this.getCurrentTime());
     },
-    getSettings: function (userSettings) {
-        const defaultSettings = {
-            activityEvents: 'click keypress scroll wheel mousewheel',
-            applicationId: 'idle-hands',
-            dialogMessage: 'Your session is about to expire due to inactivity.',
-            dialogTimeRemainingLabel: 'Time remaining',
-            dialogTitle: 'Session Expiration Warning',
-            documentTitle: null,
-            heartbeatCallback: () => {},
-            heartbeatUrl: window.location.href,
-            heartRate: 300,
-            inactivityLogoutUrl: 'https://www.google.com',
-            inactivityDialogDuration: 45,
-            sessionStoragePrefix: null,
-            logoutNowButtonText: 'Logout Now',
-            manualLogoutUrl: null,
-            maxInactivitySeconds: 600,
-            stayLoggedInButtonText: 'Stay Logged In'
+    getStartTime: function() {
+        return localStorage.getItem(this.config.applicationId + '_startTime');
+    },
+    setLogOutType: function (logOutType) {
+        localStorage.setItem(this.config.applicationId + '_logOutType', logOutType);
+    },
+    unsetLogOutType: function () {
+        localStorage.removeItem(this.config.applicationId + '_logOutType');
+    },
+    getLogOutType: function() {
+        return localStorage.getItem(this.config.applicationId + '_logOutType');
+    },
+    getCurrentTime: () => (new Date).getTime(),
+    getIdleTime: function () {
+        return this.getCurrentTime() - this.getStartTime();
+    },
+    getTimeRemaining: function () {
+        return this.config.maximumIdleDuration - this.getIdleTime();
+    },
+    start: function (config) {
+        if (this.config === null) {
+            this.config = {...this.defaultConfig, ...config};
         }
 
-        let mergedSettings = Object.assign(defaultSettings, userSettings);
+        this.unsetLogOutType();
+        this.event = this.reset.bind(this);
+        this.addEventListeners();
+        this.setStartTime();
+        this.tick();
 
-        mergedSettings.documentTitle = mergedSettings.documentTitle || mergedSettings.dialogTitle;
-        mergedSettings.sessionStoragePrefix = mergedSettings.sessionStoragePrefix || mergedSettings.applicationId;
-        mergedSettings.manualLogoutUrl = mergedSettings.manualLogoutUrl || mergedSettings.inactivityLogoutUrl;
+        if (this.tickInterval === null) {
+            this.tickInterval = setInterval(
+                this.tick.bind(this),
+                1000
+            );
+        }
 
-        return mergedSettings;
-    },
-    heartbeat: {
-        interval: undefined,
-        start: function (heartbeatUrl, heartbeatCallback, heartRate) {
-            this.interval = setInterval(this.pulse.bind(this, heartbeatUrl, heartbeatCallback), heartRate);
-        },
-        stop: function () {
-            clearInterval(this.interval);
-        },
-        pulse: function (heartbeatUrl, heartbeatCallback) {
-            fetch(heartbeatUrl).then(heartbeatCallback);
+        if (this.heartbeatInterval === null) {
+            this.heartbeatInterval = setInterval(
+                this.heartbeat.bind(this),
+                this.config.heartbeatInterval
+            );
         }
     },
-    storage: {
-        write: function (key, value) {
-            sessionStorage.setItem(key, value);
-        },
-        get: function (key) {
-            return sessionStorage.getItem(key);
-        },
-        destroy: function (key) {
-            sessionStorage.removeItem(key);
+    stop: function (destroyOverlay = true) {
+        this.removeEventListeners();
+
+        if (this.elements.overlayContainerElement !== null) {
+            destroyOverlay ? this.destroyOverlay() : this.destroyDialog();
         }
-    },
-    inactivity: {
-        interval: undefined,
-        start: function (maxInactivitySeconds, inactivityDialogDuration, dialog, inactivityLogoutUrl) {
-            this.interval = setInterval(this.check.bind(this, maxInactivitySeconds,  inactivityDialogDuration, dialog, inactivityLogoutUrl), 1000);
-            idleHands.storage.write('startTime', (new Date).getTime());
-        },
-        stop: function (callback) {
-            idleHands.storage.destroy('startTime');
 
-            clearInterval(this.interval, callback);
+        clearInterval(this.tickInterval);
+        this.tickInterval = null;
 
-            return this;
-        },
-        reset: function (maxInactivitySeconds, inactivityDialogDuration, dialog, inactivityLogoutUrl) {
-            this.stop().start(maxInactivitySeconds, inactivityDialogDuration, dialog, inactivityLogoutUrl);
-        },
-        check: function (maxInactivitySeconds, inactivityDialogDuration, dialog, inactivityLogoutUrl) {
-            let startTime = idleHands.storage.get('startTime');
-            let inactivityTime = Math.floor(((new Date).getTime() - startTime) / 1000);
-
-            if (!startTime || inactivityTime >= maxInactivitySeconds) {
-                dialog.hide();
-                this.stop().logout(inactivityLogoutUrl);
-            } else if (inactivityTime >= (maxInactivitySeconds - inactivityDialogDuration)) {
-                idleHands.removeEventListeners(
-                    document,
-                    idleHands.settings.activityEvents,
-                    idleHands.eventListener
-                );
-
-                dialog.show();
-
-                let secondsRemaining = (maxInactivitySeconds - inactivityTime);
-                let secondsLabel = (secondsRemaining > 1) ? 'seconds' : 'second';
-
-                document.querySelectorAll('#' + dialog.element.id + ' span')[0]
-                    .innerHTML = '<b>' + idleHands.settings.dialogTimeRemainingLabel + '</b>: ' +
-                        secondsRemaining + ' ' + secondsLabel;
-            } else {
-                dialog.hide();
-            }
-        },
-        logout: function (logoutUrl) {
-            this.stop((function () {
-                window.location.href = logoutUrl;
-            })(logoutUrl));
-        }
-    },
-    dialog: {
-        init: function (manualLogoutUrl, resetCallback) {
-            this.element.create();
-
-            let links = document.querySelectorAll('#' + this.element.id + ' a');
-
-            links[0].addEventListener('click', event => {
-                event.stopPropagation();
-                event.preventDefault();
-
-                resetCallback();
-            });
-
-            links[1].addEventListener('click', event => {
-                event.stopPropagation();
-                event.preventDefault();
-
-                idleHands.inactivity.logout(manualLogoutUrl);
-            });
-        },
-        element: {
-            id: 'idle-hands',
-            create: function () {
-                let dialogContainer = document.createElement('div');
-                let container = document.createElement('div');
-                let title = document.createElement('h1');
-                let subtitle = document.createElement('h2');
-                let span = document.createElement('span');
-                let stayLoggedInAnchor = document.createElement('a');
-                let logOutNowAnchor = document.createElement('a');
-
-                container.id = this.id;
-                container.style.display = 'none';
-
-                dialogContainer.id = this.id + '-dialog';
-
-                title.innerText = idleHands.settings.dialogTitle;
-
-                subtitle.innerText = idleHands.settings.dialogMessage;
-
-                stayLoggedInAnchor.href = '#';
-                stayLoggedInAnchor.innerText = idleHands.settings.stayLoggedInButtonText;
-
-                logOutNowAnchor.href = '#';
-                logOutNowAnchor.innerText = 'Log out now';
-
-                dialogContainer.appendChild(title);
-                dialogContainer.appendChild(subtitle);
-                dialogContainer.appendChild(span);
-                dialogContainer.appendChild(stayLoggedInAnchor);
-                dialogContainer.appendChild(logOutNowAnchor);
-
-                container.appendChild(dialogContainer);
-
-                document.getElementsByTagName('body')[0].appendChild(container);
-            }
-        },
-        show: function () {
-            document.title = idleHands.settings.documentTitle;
-            document.getElementById(this.element.id).style.display = 'block';
-        },
-        hide: function () {
-            document.title = idleHands.initialDocumentTitle;
-            document.getElementById(this.element.id).style.display = 'none';
-        }
+        clearInterval(this.heartbeatInterval);
+        this.heartbeatInterval = null;
     },
     reset: function () {
-        this.storage.write(
-            'startTime',
-            (new Date).getTime()
-        );
+        this.stop();
+        this.start();
+    },
+    logOut: function () {
+        document.title = this.config.loggingOutDocumentTitle;
 
-        this.addEventListeners(
-            document,
-            this.settings.activityEvents,
-            this.eventListener
-        );
+        this.stop(false);
 
-        this.inactivity.reset(
-            this.settings.maxInactivitySeconds,
-            this.settings.inactivityDialogDuration,
-            this.dialog,
-            this.settings.inactivityLogoutUrl
-        );
+        let url;
 
-        this.dialog.hide();
+        if (this.config.logOutUrl !== null) {
+            url = $this.config.logOutUrl;
+        } else if (this.getLogOutType() === 'manual') {
+                url = this.config.manualLogOutUrl;
+        } else {
+            url = this.config.automaticLogOutUrl;
+        }
+
+        this.redirect(url);
+    },
+    tick: function () {
+        const remainingTime = this.getTimeRemaining();
+        const remainingSeconds = Math.floor((remainingTime / 1000));
+        const promptDurationSeconds = Math.floor((this.config.promptDuration / 1000));
+
+        if (this.config.debug) {
+            console.log('Remaining Seconds: ' + remainingSeconds);
+        }
+
+        this.elements.dialogCountDownElement.innerText = remainingSeconds + ' seconds';
+
+        if (
+            remainingSeconds < (promptDurationSeconds + 1) &&
+            this.elements.overlayContainerElement === null
+        ) {
+            this.removeEventListeners();
+            this.buildOverlay();
+        }
+
+        if (
+            remainingSeconds > promptDurationSeconds &&
+            this.elements.overlayContainerElement !== null
+        ) {
+            this.addEventListeners();
+            this.destroyOverlay();
+        }
+
+        if (remainingSeconds <= 0 || this.getLogOutType() !== null) {
+            if (this.getLogOutType() === null) {
+                this.setLogOutType('automatic');
+            }
+            this.logOut()
+        }
+    },
+    addEventListeners: function () {
+        this.config.eventListeners.forEach(eventListener => {
+            document.addEventListener(
+                eventListener,
+                this.event
+            );
+        });
+    },
+    removeEventListeners: function () {
+        this.config.eventListeners.forEach(eventListener => {
+            document.removeEventListener(
+                eventListener,
+                this.event
+            );
+        });
+    },
+    buildOverlay: function () {
+        this.originalDocumentTitle = document.title;
+
+        this.originalContainerElementOverflow = this.config.containerElement.style.overflow;
+        this.config.containerElement.style.setProperty('overflow', 'hidden', 'important');
+
+        document.title = this.config.documentTitle;
+
+        this.elements.overlayContainerElement = document.createElement('div');
+        this.elements.dialogContainerElement = document.createElement('div');
+        this.elements.dialogTitleElement = document.createElement('h1');
+        this.elements.dialogMessageElement = document.createElement('span');
+        this.elements.dialogCountDownContainerElement = document.createElement('div');
+        this.elements.dialogButtonsContainerElement = document.createElement('div');
+        this.elements.dialogStayLoggedInButtonElement = document.createElement('button');
+        this.elements.dialogLogOutButtonElement = document.createElement('button');
+
+        // Reset styles
+        Object.keys(this.elements).forEach(key => {
+            if (this.elements[key].nodeName !== 'BUTTON') {
+                this.elements[key].style.setProperty('padding', '0', 'important');
+                this.elements[key].style.setProperty('margin', '0', 'important');
+                this.elements[key].style.setProperty('lineHeight', '1', 'important');
+                this.elements[key].style.setProperty('color', 'black', 'important');
+                this.elements[key].style.setProperty('background', 'white', 'important');
+                this.elements[key].style.setProperty('border', 'none', 'important');
+                this.elements[key].style.setProperty('text-align', 'left', 'important');
+                this.elements[key].style.setProperty('font-family', 'sans-serif', 'important');
+                this.elements[key].style.setProperty('font-size', '1em', 'important');
+                this.elements[key].style.setProperty('font-weight', '200', 'important');
+            }
+        });
+
+
+        this.elements.overlayContainerElement.id = 'idle-hands-overlay-container';
+        this.elements.overlayContainerElement.style.setProperty('width', '100%', 'important');
+        this.elements.overlayContainerElement.style.setProperty('height', '100%', 'important');
+        this.elements.overlayContainerElement.style.setProperty('position', 'fixed', 'important');
+        this.elements.overlayContainerElement.style.setProperty('top', '0', 'important');
+        this.elements.overlayContainerElement.style.setProperty('left', '0', 'important');
+        this.elements.overlayContainerElement.style.setProperty('z-index', this.config.dialogZindex, 'important');
+        this.elements.overlayContainerElement.style.setProperty('background', 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNksAcAAEUAQRtOwGEAAAAASUVORK5CYII=")', 'important');
+
+        this.elements.dialogContainerElement.style.setProperty('min-width', '350px', 'important');
+        this.elements.dialogContainerElement.style.setProperty('position', 'fixed', 'important');
+        this.elements.dialogContainerElement.style.setProperty('top', '50%', 'important');
+        this.elements.dialogContainerElement.style.setProperty('left', '50%', 'important');
+        this.elements.dialogContainerElement.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
+        this.elements.dialogContainerElement.style.setProperty('padding', '4px', 'important');
+        this.elements.dialogContainerElement.style.setProperty('background', 'white', 'important');
+        this.elements.dialogContainerElement.style.setProperty('border-radius', '4px', 'important');
+        this.elements.dialogContainerElement.style.setProperty('border', '1px solid black', 'important');
+        this.elements.dialogContainerElement.style.setProperty('font-family', 'Roboto,Verdana,sans-serif', 'important');
+        this.elements.dialogContainerElement.style.setProperty('line-height', '1.5', 'important');
+        this.elements.dialogContainerElement.style.setProperty('color', '#333', 'important');
+
+        this.elements.dialogTitleElement.innerText = this.config.dialogTitle;
+        this.elements.dialogTitleElement.style.setProperty('color', 'white', 'important');
+        this.elements.dialogTitleElement.style.setProperty('text-align', 'center', 'important');
+        this.elements.dialogTitleElement.style.setProperty('background', '#1484c8', 'important');
+        this.elements.dialogTitleElement.style.setProperty('border-radius', '4px', 'important');
+        this.elements.dialogTitleElement.style.setProperty('padding', '4px', 'important');
+        this.elements.dialogTitleElement.style.setProperty('margin', '4px', 'important');
+        this.elements.dialogTitleElement.style.setProperty('font-size', '1.15em', 'important');
+        this.elements.dialogTitleElement.style.setProperty('font-weight', '400', 'important');
+
+        this.elements.dialogMessageElement.innerText = this.config.dialogMessage;
+        this.elements.dialogMessageElement.style.setProperty('display', 'block', 'important');
+        this.elements.dialogMessageElement.style.setProperty('margin', '14px', 'important');
+
+        this.elements.dialogCountDownContainerElement.innerText = this.config.dialogCountDownMessage;
+        this.elements.dialogCountDownContainerElement.style.setProperty('display', 'block', 'important');
+        this.elements.dialogCountDownContainerElement.style.setProperty('margin', '14px', 'important');
+
+        this.elements.dialogStayLoggedInButtonElement.innerText = this.config.dialogStayLoggedInButtonText;
+        this.elements.dialogStayLoggedInButtonElement.addEventListener('click', () => this.reset());
+        this.elements.dialogStayLoggedInButtonElement.style.setProperty('width', '40%', 'important');
+        this.elements.dialogStayLoggedInButtonElement.style.setProperty('padding', '8px 0', 'important');
+        this.elements.dialogStayLoggedInButtonElement.style.setProperty('margin', '10px', 'important');
+        this.elements.dialogStayLoggedInButtonElement.style.setProperty('margin-left', '7%', 'important');
+
+        this.elements.dialogLogOutButtonElement.innerText = this.config.dialogLogOutButtonText;
+        this.elements.dialogLogOutButtonElement.addEventListener('click', () => {
+            this.setLogOutType('manual');
+            this.logOut();
+        });
+        this.elements.dialogLogOutButtonElement.style.setProperty('width', '40%', 'important');
+        this.elements.dialogLogOutButtonElement.style.setProperty('padding', '8px 0', 'important');
+        this.elements.dialogLogOutButtonElement.style.setProperty('margin', '10px', 'important');
+        this.elements.dialogLogOutButtonElement.style.setProperty('margin-right', '7%', 'important');
+
+        this.elements.dialogContainerElement.appendChild(this.elements.dialogTitleElement);
+        this.elements.dialogContainerElement.appendChild(this.elements.dialogMessageElement);
+        this.elements.dialogCountDownContainerElement.appendChild(this.elements.dialogCountDownElement);
+        this.elements.dialogContainerElement.appendChild(this.elements.dialogCountDownContainerElement);
+        this.elements.dialogContainerElement.appendChild(document.createElement('hr'));
+        this.elements.dialogButtonsContainerElement.appendChild(this.elements.dialogStayLoggedInButtonElement);
+        this.elements.dialogButtonsContainerElement.appendChild(this.elements.dialogLogOutButtonElement);
+        this.elements.dialogContainerElement.appendChild(this.elements.dialogButtonsContainerElement);
+        this.elements.overlayContainerElement.appendChild(this.elements.dialogContainerElement);
+
+        this.config.containerElement.appendChild(this.elements.overlayContainerElement);
+
+        this.elements.dialogStayLoggedInButtonElement.focus();
+    },
+    destroyOverlay: function () {
+        document.title = this.originalDocumentTitle;
+
+        this.config.containerElement.style.overflow = this.originalContainerElementOverflow;
+
+        this.config.containerElement.removeChild(this.elements.overlayContainerElement);
+        this.elements.overlayContainerElement = null;
+    },
+    destroyDialog: function () {
+        this.elements.overlayContainerElement.removeChild(this.elements.dialogContainerElement);
+        this.elements.overlayContainerElement = null;
+    },
+    redirect: function (url) {
+        this.config.debug ?
+            console.log('Redirect: ' + url) :
+            window.location.replace(url);
+    },
+    heartbeat: function () {
+        this.config.debug ?
+            console.log('Hearbeat: ' + this.config.heartbeatUrl) :
+            fetch(this.config.heartbeatUrl);
     }
-}
+};
