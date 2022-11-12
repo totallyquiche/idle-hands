@@ -27,6 +27,10 @@ class ConfigManager extends PropertyManager {
     // this.set('manualLogOutUrl', window.location.href);
     // this.set('overlayZindex', 9999);
 
+    if (!configValues['logoutUrl']) {
+      throw new TypeError('logoutUrl must be defined');
+    }
+
     for (const key in configValues) {
       this.set(key, configValues[key]);
     }

@@ -49,6 +49,7 @@ class IdleHands extends PropertyManager {
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
     const PROMPT_DURATION = this.getConfig('promptDuration');
     const PROMPT = this.get('prompt');
+    const LOGOUT_URL = this.getConfig('logoutUrl');
 
     this.log('Tick...');
 
@@ -63,6 +64,9 @@ class IdleHands extends PropertyManager {
     if (TIME_REMAINING <= 0) {
       this.log('Stopping timer...');
       TIMER.stop();
+
+      this.log('Redirecting...');
+      window.location.replace(LOGOUT_URL);
     } else if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
       this.log('Heartbeat...');
       this.get('heartbeat').beat();
