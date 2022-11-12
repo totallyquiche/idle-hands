@@ -9,6 +9,7 @@ class ConfigManager extends PropertyManager {
     this.set('applicationId', window.location.hostname);
     this.set('maximumIdleTime', ((60 * 1000) * 60)); // 1 hour
     this.set('heartbeatUrl', window.location.href);
+    this.set('heartbeatInterval', (60 * 1000)) // 1 minute
 
     // this.set('automaticLogOutUrl', window.location.href);
     // this.set('containerElement', document.getElementsByTagName('body')[0]);
@@ -19,8 +20,6 @@ class ConfigManager extends PropertyManager {
     // this.set('dialogTitle', 'Session Expiration Warning');
     // this.set('documentTitle', 'Session Expiration Warning');
     // this.set('eventListeners', ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
-    // this.set('heartbeatInterval', ((60 * 1000) * 30));
-    // this.set('heartbeatUrl', window.location.href);
     // this.set('logOutUrl', null);
     // this.set('loggingOutDocumentTitle', 'Logging Out...');
     // this.set('manualLogOutUrl', window.location.href);
