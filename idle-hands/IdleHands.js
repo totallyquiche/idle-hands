@@ -1,4 +1,5 @@
 import PropertyManager from './PropertyManager.js';
+import Logger from './Logger.js';
 import ConfigManager from './ConfigManager.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
@@ -8,6 +9,8 @@ class IdleHands extends PropertyManager {
 
   constructor(config = {}) {
     super()
+
+    this.set('logger', new Logger);
 
     this.set('config', new ConfigManager(config));
 
@@ -24,6 +27,10 @@ class IdleHands extends PropertyManager {
     this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')))
   }
 
+  log(message) {
+    if (this.getConfig('debug')) this.get('logger').log(message);
+  }
+
   getConfig(key) {
     return this.get('config').get(key);
   }
@@ -38,9 +45,19 @@ class IdleHands extends PropertyManager {
     const TIMER = this.get('timer');
     const HEARTBEAT_INTERVAL = this.get('config').get('heartbeatInterval');
     const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleTime');
+    const DEBUG = this.getConfig('debug');
 
-    if (TIMER.atInterval(HEARTBEAT_INTERVAL)) this.get('heartbeat').beat();
-    if (TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME) <= 0) TIMER.stop();
+    this.log('Tick...');
+
+    if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
+      this.log('Heartbeat...');
+      this.get('heartbeat').beat();
+    }
+
+    if (TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME) <= 0) {
+      this.log('Stopping timer...');
+      TIMER.stop();
+    }
   }
 
 };
