@@ -8,6 +8,7 @@ class ConfigManager extends PropertyManager {
     this.set('debug', false);
     this.set('applicationId', window.location.hostname);
     this.set('maximumIdleTime', ((60 * 1000) * 60)); // 1 hour
+    this.set('heartbeatUrl', window.location.href);
 
     // this.set('automaticLogOutUrl', window.location.href);
     // this.set('containerElement', document.getElementsByTagName('body')[0]);
@@ -29,20 +30,6 @@ class ConfigManager extends PropertyManager {
     for (const key in configValues) {
       this.set(key, configValues[key]);
     }
-
-    const REQUIRED_CONFIGS = [
-      'applicationId',
-      'maximumIdleTime',
-      'heartbeatUrl',
-    ];
-
-    REQUIRED_CONFIGS.forEach(function (configName) {
-      try {
-        this.get('heartbeatUrl');
-      } catch (error) {
-        throw new TypeError(`Config "${configName}" must be defined`);
-      }
-    }.bind(this));
   }
 
 }
