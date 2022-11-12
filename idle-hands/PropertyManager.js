@@ -7,7 +7,9 @@ class PropertyManager {
   }
 
   get(key) {
-    if (!this.properties[key]) throw new TypeError(`Property "${key}" does not exist`);
+    if (this.properties[key] === undefined) {
+      throw new TypeError(`Property "${key}" does not exist`);
+    }
 
     return this.properties[key];
   }

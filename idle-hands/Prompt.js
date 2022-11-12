@@ -5,6 +5,7 @@ class Prompt extends PropertyManager{
   constructor(containerSelector) {
     super();
 
+    this.set('isDisplayed', false);
     this.set('timeElement', this.getTimeElement());
     this.set('promptElement', this.getPromptElement());
 
@@ -26,8 +27,12 @@ class Prompt extends PropertyManager{
     return PROMPT_ELEMENT;
   }
 
-  display(timeRemaining) {
+  updateTimeRemaining(timeRemaining) {
     this.get('timeElement').innerText = timeRemaining;
+  }
+
+  display() {
+    this.set('isDisplayed', true);
     this.get('promptElement').style.display = 'block';
   }
 

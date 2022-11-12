@@ -52,19 +52,20 @@ class IdleHands extends PropertyManager {
 
     this.log('Tick...');
 
-    if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
-      this.log('Heartbeat...');
-      this.get('heartbeat').beat();
-    }
+    this.log('Updating prompt...');
+    PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
 
-    if (TIME_REMAINING <= PROMPT_DURATION) {
+    if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT.get('isDisplayed')) {
       this.log('Displaying prompt...');
-      PROMPT.display(TIME_REMAINING / 1000);
+      PROMPT.display();
     }
 
     if (TIME_REMAINING <= 0) {
       this.log('Stopping timer...');
       TIMER.stop();
+    } else if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
+      this.log('Heartbeat...');
+      this.get('heartbeat').beat();
     }
   }
 
