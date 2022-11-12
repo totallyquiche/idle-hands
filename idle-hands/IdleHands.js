@@ -35,7 +35,12 @@ class IdleHands extends PropertyManager {
   }
 
   tick() {
-    this.get('heartbeat').beat();
+    const TIMER = this.get('timer');
+    const HEARTBEAT_INTERVAL = this.get('config').get('heartbeatInterval');
+    const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleTime');
+
+    if (TIMER.atInterval(HEARTBEAT_INTERVAL)) this.get('heartbeat').beat();
+    if (TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME) <= 0) TIMER.stop();
   }
 
 };
