@@ -1,35 +1,39 @@
 # Idle Hands
-Manage user inactivity across all browser windows with automatic redirect and dialog prompt.
 
-This is a zero-dependency, pure JavaScript rewrite of the [jQuery Idle Hands plugin](https://github.com/totallyquiche/jquery-idle-hands).
+Manage user inactivity across all browser windows with automatic redirect and
+dialog prompt.
+
+This is a zero-dependency, pure JavaScript rewrite of the
+[jQuery Idle Hands plugin](https://github.com/totallyquiche/jquery-idle-hands).
 
 ## Basic Usage
+
 ```html
-<script src="idle-hands.min.js"></script>
-<script>
-    window.onload = () => {
-        idleHands.start({
-            logOutUrl: 'https://abc.xyz/logout'
-        });
-    }
+<script type="module">
+    import idleHands from './idle-hands.js';
+
+    idleHands.start();
 </script>
 ```
 
 ### Advanced Usage
+
 ```html
-<script src="idle-hands.min.js"></script>
-<script>
+<script type="module">
+    import idleHands from './idle-hands.js';
+
     idleHands.start({
         applicationId: 'idle_hands',
         heartbeatUrl: 'https://abc.xyz/logout',
         manualLogOutUrl: 'https://abc.xyz/logout/?type=manual',
         automaticLogOutUrl: 'https://abc.xyz/logout/?type=automatic',
-        maxInactivitySeconds: (60 * 60) // 1 hour
+        maxInactivitySeconds: (60 * 60) // 1 hour,
     });
 </script>
 ```
 
 ## Settings
+
 |Name|Default Value|Description|
 |---|---|--|
 |`applicationId`|`window.location.hostname`|A unique identifier used to avoid conflicts with other sites using Idle Hands.|

@@ -292,3 +292,5 @@ const idleHands = {
             fetch(this.config.heartbeatUrl);
     }
 };
+
+export default idleHands;
