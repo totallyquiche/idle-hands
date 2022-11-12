@@ -4,6 +4,7 @@ import ConfigManager from './ConfigManager.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
+import Prompt from './Prompt.js';
 
 class IdleHands extends PropertyManager {
 
@@ -14,12 +15,12 @@ class IdleHands extends PropertyManager {
 
     this.set('config', new ConfigManager(config));
 
+    this.set('prompt', new Prompt(this.getConfig('promptContainerSelector')));
+
     this.set(
       'timer',
       new Timer(
-        new Storage(
-          this.getConfig('applicationId')
-        ),
+        new Storage(this.getConfig('applicationId')),
         this.tick.bind(this)
       )
     );
@@ -38,13 +39,16 @@ class IdleHands extends PropertyManager {
   getTimeRemaining() {
     const TIMER = this.get('timer');
 
-    return this.getConfig('maximumIdleTime') - TIMER.getIdleTime();
+    return this.getConfig('maximumIdleDuration') - TIMER.getIdleTime();
   }
 
   tick() {
     const TIMER = this.get('timer');
     const HEARTBEAT_INTERVAL = this.get('config').get('heartbeatInterval');
-    const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleTime');
+    const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleDuration');
+    const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
+    const PROMPT_DURATION = this.getConfig('promptDuration');
+    const PROMPT = this.get('prompt');
 
     this.log('Tick...');
 
@@ -53,7 +57,12 @@ class IdleHands extends PropertyManager {
       this.get('heartbeat').beat();
     }
 
-    if (TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME) <= 0) {
+    if (TIME_REMAINING <= PROMPT_DURATION) {
+      this.log('Displaying prompt...');
+      PROMPT.display(TIME_REMAINING / 1000);
+    }
+
+    if (TIME_REMAINING <= 0) {
       this.log('Stopping timer...');
       TIMER.stop();
     }

@@ -7,9 +7,11 @@ class ConfigManager extends PropertyManager {
 
     this.set('debug', false);
     this.set('applicationId', window.location.hostname);
-    this.set('maximumIdleTime', ((60 * 1000) * 60)); // 1 hour
+    this.set('maximumIdleDuration', 60 * 1000 * 60); // 1 hour
     this.set('heartbeatUrl', window.location.href);
-    this.set('heartbeatInterval', (60 * 1000)) // 1 minute
+    this.set('heartbeatInterval', 60 * 1000); // 1 minute
+    this.set('promptDuration', 30 * 1000); // 30 seconds
+    this.set('promptContainerSelector', 'body');
 
     // this.set('automaticLogOutUrl', window.location.href);
     // this.set('containerElement', document.getElementsByTagName('body')[0]);
@@ -24,7 +26,6 @@ class ConfigManager extends PropertyManager {
     // this.set('loggingOutDocumentTitle', 'Logging Out...');
     // this.set('manualLogOutUrl', window.location.href);
     // this.set('overlayZindex', 9999);
-    // this.set('promptDuration', (30 * 1000));
 
     for (const key in configValues) {
       this.set(key, configValues[key]);
