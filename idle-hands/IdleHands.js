@@ -50,13 +50,14 @@ class IdleHands extends PropertyManager {
     const PROMPT_DURATION = this.getConfig('promptDuration');
     const PROMPT = this.get('prompt');
     const LOGOUT_URL = this.getConfig('logoutUrl');
+    const PROMPT_IS_DISPLAYED = PROMPT.get('isDisplayed');
 
     this.log('Tick...');
 
     this.log('Updating prompt...');
     PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
 
-    if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT.get('isDisplayed')) {
+    if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
       this.log('Displaying prompt...');
       PROMPT.display();
     }
