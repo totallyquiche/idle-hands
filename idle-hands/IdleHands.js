@@ -45,7 +45,6 @@ class IdleHands extends PropertyManager {
     const TIMER = this.get('timer');
     const HEARTBEAT_INTERVAL = this.get('config').get('heartbeatInterval');
     const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleTime');
-    const DEBUG = this.getConfig('debug');
 
     this.log('Tick...');
 
