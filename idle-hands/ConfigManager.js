@@ -11,7 +11,7 @@ class ConfigManager extends PropertyManager {
     this.set('heartbeatUrl', window.location.href);
     this.set('heartbeatInterval', 60 * 1000); // 1 minute
     this.set('documentTitle', 'Session Expiration Warning');
-    this.set('logoutDocumentTitle', 'Logging Out');
+    this.set('logoutDocumentTitle', 'Logging out...');
     this.set('promptDuration', 30 * 1000); // 30 seconds
     this.set('promptContainerSelector', 'body');
     this.set('promptZindex', 9999);
@@ -27,8 +27,6 @@ class ConfigManager extends PropertyManager {
     this.set('events',  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
 
     // this.set('automaticLogOutUrl', window.location.href);
-    // this.set('documentTitle', 'Session Expiration Warning');
-    // this.set('loggingOutDocumentTitle', 'Logging Out...');
     // this.set('manualLogOutUrl', window.location.href);
 
     if (!configValues['logoutUrl']) {
