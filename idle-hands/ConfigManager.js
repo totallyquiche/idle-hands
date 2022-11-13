@@ -13,7 +13,7 @@ class ConfigManager extends PropertyManager {
     this.set('promptDuration', 30 * 1000); // 30 seconds
     this.set('promptContainerSelector', 'body');
     this.set('promptZindex', 9999);
-    this.set('events',  [ 'click', 'keypress', 'scroll', 'wheel', 'mousewheel' ]);
+    this.set('events',  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
 
     // this.set('automaticLogOutUrl', window.location.href);
     // this.set('dialogCountDownMessage', 'Time remaining: ');
