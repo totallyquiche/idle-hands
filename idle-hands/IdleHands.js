@@ -12,20 +12,15 @@ class IdleHands extends PropertyManager {
     super()
 
     this.set('logger', new Logger);
-
     this.set('config', new ConfigManager(config));
-
     this.set('prompt', new Prompt(this.getConfig('promptContainerSelector')));
+    this.set('storage', new Storage(this.getConfig('applicationId')));
+    this.set('timer', this.getTimer());
+    this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));
+  }
 
-    this.set(
-      'timer',
-      new Timer(
-        new Storage(this.getConfig('applicationId')),
-        this.tick.bind(this)
-      )
-    );
-
-    this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')))
+  getTimer() {
+    return new Timer(this.get('storage'), this.tick.bind(this));
   }
 
   log(message) {
@@ -71,7 +66,13 @@ class IdleHands extends PropertyManager {
     } else if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
       this.log('Heartbeat...');
       this.get('heartbeat').beat();
+      this.restart();
     }
+  }
+
+  restart() {
+    this.get('timer').stop();
+    this.set('timer', this.getTimer());
   }
 
 };
