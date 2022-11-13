@@ -1,4 +1,4 @@
-import PropertyManager from "./PropertyManager.js";
+import PropertyManager from "../PropertyManager.js";
 
 class Prompt extends PropertyManager{
 

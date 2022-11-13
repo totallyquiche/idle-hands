@@ -4,7 +4,7 @@ import Logger from './Logger.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
-import Prompt from './Prompt.js';
+import Prompt from './prompt/Prompt.js';
 
 class IdleHands extends PropertyManager {
 
