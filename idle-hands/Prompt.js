@@ -81,6 +81,7 @@ class Prompt extends PropertyManager{
     const LOGOUT_BUTTON_ELEMENT = document.createElement('button');
 
     LOGOUT_BUTTON_ELEMENT.innerText = 'Log Out';
+    LOGOUT_BUTTON_ELEMENT.id = 'idle-hands-prompt-logout-button';
 
     return LOGOUT_BUTTON_ELEMENT;
   }

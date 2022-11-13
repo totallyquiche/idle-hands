@@ -13,11 +13,7 @@ class Storage {
   }
 
   get(key) {
-    localStorage.getItem(this.prefix + key);
-  }
-
-  delete(key) {
-    localStorage.removeItem(this.prefix + key);
+    return localStorage.getItem(this.prefix + key);
   }
 
 };

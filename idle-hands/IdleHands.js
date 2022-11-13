@@ -18,9 +18,11 @@ class IdleHands extends PropertyManager {
     this.set('timer', this.getTimer());
     this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));
     this.set('resetHandler', this.reset.bind(this));
+    this.set('logoutHandler', this.logOut.bind(this));
 
     this.setEventListeners();
     this.setCancelButtonEventListener();
+    this.setLogoutButtonEventListener();
   }
 
   setEventListeners() {
@@ -38,6 +40,11 @@ class IdleHands extends PropertyManager {
   setCancelButtonEventListener() {
     document.getElementById('idle-hands-prompt-cancel-button')
       .addEventListener('click', this.get('resetHandler'));
+  }
+
+  setLogoutButtonEventListener() {
+    document.getElementById('idle-hands-prompt-logout-button')
+      .addEventListener('click', this.get('logoutHandler'));
   }
 
   getTimer() {
@@ -65,7 +72,6 @@ class IdleHands extends PropertyManager {
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
     const PROMPT_DURATION = this.getConfig('promptDuration');
     const PROMPT = this.get('prompt');
-    const LOGOUT_URL = this.getConfig('logoutUrl');
     const PROMPT_IS_DISPLAYED = PROMPT.get('isDisplayed');
 
     this.log('Tick...');
@@ -81,11 +87,8 @@ class IdleHands extends PropertyManager {
     }
 
     if (TIME_REMAINING <= 0) {
-      this.log('Stopping timer...');
-      TIMER.stop();
-
-      this.log('Redirecting...');
-      window.location.replace(LOGOUT_URL);
+      this.log('Logging out...');
+      this.logOut();
     } else if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
       this.log('Heartbeat...');
       this.get('heartbeat').beat();
@@ -98,6 +101,11 @@ class IdleHands extends PropertyManager {
     this.get('prompt').hide();
     this.get('timer').stop();
     this.set('timer', this.getTimer());
+  }
+
+  logOut() {
+    this.get('timer').stop();
+    window.location.replace(this.getConfig('logoutUrl'));
   }
 
 };
