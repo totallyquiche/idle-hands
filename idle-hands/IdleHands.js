@@ -4,7 +4,7 @@ import Logger from './Logger.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
-import Prompt from './prompt/Prompt.js';
+import Prompt from './Prompt.js';
 
 class IdleHands extends PropertyManager {
 
@@ -52,12 +52,14 @@ class IdleHands extends PropertyManager {
   }
 
   setCancelButtonEventListener() {
-    document.getElementById('idle-hands-prompt-cancel-button')
+    this.get('prompt')
+      .get('cancelButtonElement')
       .addEventListener('click', this.get('resetHandler'));
   }
 
   setLogoutButtonEventListener() {
-    document.getElementById('idle-hands-prompt-logout-button')
+    this.get('prompt')
+      .get('logoutButtonElement')
       .addEventListener('click', this.get('logoutHandler'));
   }
 
