@@ -8,7 +8,8 @@ class Prompt extends PropertyManager{
     timeRemainingTemplate,
     headerText,
     cancelButtonText,
-    logoutButtonText
+    logoutButtonText,
+    logoutText
   ) {
     super();
 
@@ -19,7 +20,7 @@ class Prompt extends PropertyManager{
       'timeRemainingElement',
       this.buildTimeRemainingElement(timeRemainingTemplate)
     );
-    this.set('logoutMessageElement', this.buildLogoutMessageElement());
+    this.set('logoutMessageElement', this.buildLogoutMessageElement(logoutText));
     this.set(
       'cancelButtonElement',
       this.buildCancelButtonElement(cancelButtonText)
@@ -152,10 +153,10 @@ class Prompt extends PropertyManager{
     return this.get('logoutButtonElement');
   }
 
-  buildLogoutMessageElement() {
+  buildLogoutMessageElement(logoutText) {
     const LOGOUT_MESSAGE_ELEMENT = document.createElement('span');
 
-    LOGOUT_MESSAGE_ELEMENT.innerText = 'Logging out...';
+    LOGOUT_MESSAGE_ELEMENT.innerText = logoutText;
     LOGOUT_MESSAGE_ELEMENT.style.display = 'none';
     LOGOUT_MESSAGE_ELEMENT.id = 'idle-hands-prompt-logout-message';
 

@@ -17,12 +17,11 @@ class ConfigManager extends PropertyManager {
     this.set('promptHeaderText', 'Session Expiration Warning');
     this.set('promptCancelButtonText', 'Cancel');
     this.set('promptLogoutButtonText', 'Log Out');
+    this.set('promptLogoutText', 'Logging out...');
     this.set('events',  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
 
     // this.set('automaticLogOutUrl', window.location.href);
-    // this.set('dialogLogOutButtonText', 'Log Out Now');
     // this.set('dialogMessage', 'Your session is about to expire due to inactivity.');
-    // this.set('dialogStayLoggedInButtonText', 'Stay Logged In');
     // this.set('documentTitle', 'Session Expiration Warning');
     // this.set('loggingOutDocumentTitle', 'Logging Out...');
     // this.set('manualLogOutUrl', window.location.href);
