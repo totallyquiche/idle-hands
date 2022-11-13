@@ -15,7 +15,7 @@ class IdleHands extends PropertyManager {
     this.set('config', new ConfigManager(config));
     this.set('prompt', new Prompt(this.getConfig('promptContainerSelector')));
     this.set('storage', new Storage(this.getConfig('applicationId')));
-    this.set('timer', this.getTimer());
+    this.set('timer', this.createTimer());
     this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));
     this.set('resetHandler', this.reset.bind(this));
     this.set('logoutHandler', this.logOut.bind(this));
@@ -47,7 +47,7 @@ class IdleHands extends PropertyManager {
       .addEventListener('click', this.get('logoutHandler'));
   }
 
-  getTimer() {
+  createTimer() {
     return new Timer(this.get('storage'), this.tick.bind(this));
   }
 
@@ -100,7 +100,7 @@ class IdleHands extends PropertyManager {
     this.setEventListeners();
     this.get('prompt').hide();
     this.get('timer').stop();
-    this.set('timer', this.getTimer());
+    this.set('timer', this.createTimer());
   }
 
   logOut() {
