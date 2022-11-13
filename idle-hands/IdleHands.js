@@ -4,7 +4,7 @@ import Logger from './Logger.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
-import Prompt from './Prompt.js';
+import PromptFactory from './prompt/PromptFactory.js';
 
 class IdleHands extends PropertyManager {
 
@@ -27,7 +27,7 @@ class IdleHands extends PropertyManager {
   }
 
   getPrompt() {
-    return new Prompt(
+    return new PromptFactory(
       this.getConfig('promptContainerSelector'),
       this.getConfig('promptZindex'),
       this.getConfig('promptTimeRemainingTemplate'),

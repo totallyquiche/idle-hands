@@ -17,7 +17,7 @@ class Element {
     });
 
     for (const style in styles) {
-      ELEMENT.style[style] = styles[style];
+      ELEMENT.style.setProperty(style, styles[style], 'important');
     }
 
     ELEMENT.innerText = text;

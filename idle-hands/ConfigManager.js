@@ -21,8 +21,8 @@ class ConfigManager extends PropertyManager {
       'promptDialogText',
       'Your session is about to expire due to inactivity.'
     );
-    this.set('promptCancelButtonText', 'Cancel');
-    this.set('promptLogoutButtonText', 'Log Out');
+    this.set('promptCancelButtonText', 'Stay Logged In');
+    this.set('promptLogoutButtonText', 'Log Out Now');
     this.set('promptLogoutText', 'Logging out...');
     this.set('events',  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
 
