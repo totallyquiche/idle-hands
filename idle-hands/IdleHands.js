@@ -99,6 +99,7 @@ class IdleHands extends PropertyManager {
     PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
 
     if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
+      this.log('Unsetting event listeners...');
       this.unsetEventListeners();
 
       this.log('Displaying prompt...');
