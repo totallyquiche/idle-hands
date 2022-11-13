@@ -17,6 +17,20 @@ class IdleHands extends PropertyManager {
     this.set('storage', new Storage(this.getConfig('applicationId')));
     this.set('timer', this.getTimer());
     this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));
+    this.set('resetHandler', this.reset.bind(this));
+
+    this.setEventListeners();
+
+    document.getElementById('idle-hands-prompt-cancel-button')
+      .addEventListener('click', this.get('resetHandler'));
+  }
+
+  setEventListeners() {
+    document.addEventListener('click', this.get('resetHandler'));
+  }
+
+  unsetEventListeners() {
+    document.removeEventListener('click', this.get('resetHandler'));
   }
 
   getTimer() {
@@ -53,6 +67,8 @@ class IdleHands extends PropertyManager {
     PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
 
     if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
+      this.unsetEventListeners();
+
       this.log('Displaying prompt...');
       PROMPT.display();
     }
@@ -66,11 +82,12 @@ class IdleHands extends PropertyManager {
     } else if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
       this.log('Heartbeat...');
       this.get('heartbeat').beat();
-      this.restart();
     }
   }
 
-  restart() {
+  reset() {
+    this.setEventListeners();
+    this.get('prompt').hide();
     this.get('timer').stop();
     this.set('timer', this.getTimer());
   }

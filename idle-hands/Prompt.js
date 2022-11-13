@@ -22,6 +22,11 @@ class Prompt extends PropertyManager{
     this.get('promptElement').style.display = 'flex';
   }
 
+  hide() {
+    this.set('isDisplayed', false);
+    this.get('promptElement').style.display = 'none';
+  }
+
   getPromptElement() {
     const PROMPT_ELEMENT = document.createElement('div');
 
@@ -33,6 +38,8 @@ class Prompt extends PropertyManager{
     PROMPT_ELEMENT.style.color = 'white';
 
     PROMPT_ELEMENT.appendChild(this.getDialogElement());
+
+    PROMPT_ELEMENT.classList.add('idle-hands-prompt');
 
     return PROMPT_ELEMENT;
   }
@@ -65,6 +72,7 @@ class Prompt extends PropertyManager{
     const CANCEL_BUTTON_ELEMENT = document.createElement('button');
 
     CANCEL_BUTTON_ELEMENT.innerText = 'Cancel';
+    CANCEL_BUTTON_ELEMENT.id = 'idle-hands-prompt-cancel-button';
 
     return CANCEL_BUTTON_ELEMENT;
   }
