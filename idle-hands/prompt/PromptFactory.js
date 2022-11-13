@@ -1,4 +1,3 @@
-import PropertyManager from "../PropertyManager.js";
 import Header from "./elements/Header.js";
 import Dialog from "./elements/Dialog.js";
 import DialogText from "./elements/DialogText.js";
@@ -9,7 +8,7 @@ import LogoutButton from "./elements/LogoutButton.js";
 import TimeRemaining from "./elements/TimeRemaining.js";
 import Prompt from "./elements/Prompt.js";
 
-class PromptFactory extends PropertyManager {
+class PromptFactory {
 
   constructor(
     containerSelector,
@@ -21,58 +20,50 @@ class PromptFactory extends PropertyManager {
     logoutButtonText,
     logoutText
   ) {
-    super();
-
-    this.set('isDisplayed', false);
-    this.set('headerElement', Header.create(headerText));
-    this.set('dialogTextElement', DialogText.create(dialogText));
-    this.set('timeElement', Time.create());
-    this.set(
-      'timeRemainingElement',
-      TimeRemaining.create(
-        timeRemainingTemplate,
-        this.get('timeElement')
-      )
+    this.isDisplayed = false;
+    this.headerElement = Header.create(headerText);
+    this.dialogTextElement = DialogText.create(dialogText);
+    this.timeElement = Time.create();
+    this.timeRemainingElement = TimeRemaining.create(
+      timeRemainingTemplate,
+      this.timeElement
     );
-    this.set('logoutMessageElement', LogoutMessage.create(logoutText));
-    this.set('cancelButtonElement', CancelButton.create(cancelButtonText));
-    this.set('logoutButtonElement', LogoutButton.create(logoutButtonText));
-    this.set(
-      'dialogElement',
-      Dialog.create(
-        this.get('headerElement'),
-        this.get('dialogTextElement'),
-        this.get('timeRemainingElement'),
-        this.get('logoutMessageElement'),
-        this.get('cancelButtonElement'),
-        this.get('logoutButtonElement')
-      )
-      );
-    this.set('promptElement', Prompt.create(zIndex, this.get('dialogElement')));
+    this.logoutMessageElement = LogoutMessage.create(logoutText);
+    this.cancelButtonElement = CancelButton.create(cancelButtonText);
+    this.logoutButtonElement = LogoutButton.create(logoutButtonText);
+    this.dialogElement = Dialog.create(
+        this.headerElement,
+        this.dialogTextElement,
+        this.timeRemainingElement,
+        this.logoutMessageElement,
+        this.cancelButtonElement,
+        this.logoutButtonElement,
+    );
+    this.promptElement = Prompt.create(zIndex, this.dialogElement);
 
     document.querySelector(containerSelector)
-      .appendChild(this.get('promptElement'));
+      .appendChild(this.promptElement);
   }
 
   updateTimeRemaining(timeRemaining) {
-    this.get('timeElement').innerText = timeRemaining;
+    this.timeElement.innerText = timeRemaining;
   }
 
   display() {
-    this.set('isDisplayed', true);
-    this.get('promptElement').style.display = 'flex';
+    this.isDisplayed = true;
+    this.promptElement.style.display = 'flex';
   }
 
   hide() {
-    this.set('isDisplayed', false);
-    this.get('promptElement').style.display = 'none';
+    this.isDisplayed = false;
+    this.promptElement.style.display = 'none';
   }
 
   displayLogoutMessage() {
-    this.get('timeRemainingElement').style.display = 'none';
-    this.get('cancelButtonElement').disabled = true;
-    this.get('logoutButtonElement').disabled = true;
-    this.get('logoutMessageElement').style.display = 'block';
+    this.timeRemainingElement.style.display = 'none';
+    this.cancelButtonElement.disabled = true;
+    this.logoutButtonElement.disabled = true;
+    this.logoutMessageElement.style.display = 'block';
   }
 
 }

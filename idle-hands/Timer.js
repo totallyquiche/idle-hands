@@ -1,17 +1,13 @@
-import PropertyManager from "./PropertyManager.js";
-
-class Timer extends PropertyManager {
+class Timer {
 
   constructor(storage, tick = () => {}) {
-    super();
-
     if (!storage) throw new TypeError('storage must be defined');
 
-    this.set('storage', storage);
+    this.storage = storage;
 
     this.setStartTime();
 
-    this.set('tickInterval', setInterval(tick, 1000));
+    this.tickInterval = setInterval(tick, 1000);
   }
 
   getCurrentTime() {
@@ -19,15 +15,15 @@ class Timer extends PropertyManager {
   }
 
   setStartTime() {
-    this.get('storage').set('startTime', this.getCurrentTime());
+    this.storage.set('startTime', this.getCurrentTime());
   }
 
   getStartTime() {
-    return this.get('storage').get('startTime');
+    return this.storage.get('startTime');
   }
 
   clearStartTime() {
-    this.get('storage').delete('startTime');
+    this.storage.delete('startTime');
   }
 
   getIdleTime() {
@@ -45,7 +41,7 @@ class Timer extends PropertyManager {
   }
 
   stop() {
-    clearInterval(this.get('tickInterval'));
+    clearInterval(this.tickInterval);
   }
 
 }

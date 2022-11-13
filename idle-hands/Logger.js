@@ -1,19 +1,13 @@
-import PropertyManager from "./PropertyManager.js";
-
-class Logger extends PropertyManager{
+class Logger {
 
   constructor(applicationId) {
-    super();
-
     if (!applicationId) throw new TypeError('applicationId must be defined');
 
-    this.set('applicationId', applicationId);
+    this.applicationId = applicationId;
   }
 
   log(message) {
-    const APPLICATION_ID = this.get('applicationId');
-
-    console.log(`[IDLE HANDS - ${APPLICATION_ID}] ${message}`);
+    console.log(`[IDLE HANDS - ${this.applicationId}] ${message}`);
   }
 
 }

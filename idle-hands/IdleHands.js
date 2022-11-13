@@ -1,4 +1,3 @@
-import PropertyManager from './PropertyManager.js';
 import ConfigManager from './ConfigManager.js';
 import Logger from './Logger.js';
 import Storage from './Storage.js';
@@ -6,20 +5,18 @@ import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
 import PromptFactory from './prompt/PromptFactory.js';
 
-class IdleHands extends PropertyManager {
+class IdleHands {
 
   constructor(config = {}) {
-    super()
-
-    this.set('originalDocumentTitle', document.title);
-    this.set('config', new ConfigManager(config));
-    this.set('logger', new Logger(this.getConfig('applicationId')));
-    this.set('prompt', this.getPrompt());
-    this.set('storage', new Storage(this.getConfig('applicationId')));
-    this.set('timer', this.createTimer());
-    this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));
-    this.set('resetHandler', this.reset.bind(this));
-    this.set('logoutHandler', this.logOut.bind(this));
+    this.originalDocumentTitle = document.title;
+    this.config = new ConfigManager(config);
+    this.logger = new Logger(this.getConfig('applicationId'));
+    this.prompt = this.getPrompt();
+    this.storage = new Storage(this.getConfig('applicationId'));
+    this.timer = this.createTimer();
+    this.heartbeat = new Heartbeat(this.getConfig('heartbeatUrl'));
+    this.resetHandler = this.reset.bind(this);
+    this.logoutHandler = this.logOut.bind(this);
 
     this.setEventListeners();
     this.setCancelButtonEventListener();
@@ -41,61 +38,59 @@ class IdleHands extends PropertyManager {
 
   setEventListeners() {
     this.getConfig('events').forEach(function(event) {
-      document.addEventListener(event, this.get('resetHandler'));
+      document.addEventListener(event, this.resetHandler);
     }.bind(this));
   }
 
   unsetEventListeners() {
     this.getConfig('events').forEach(function(event) {
-      document.removeEventListener(event, this.get('resetHandler'));
+      document.removeEventListener(event, this.resetHandler);
     }.bind(this));
   }
 
   setCancelButtonEventListener() {
-    this.get('prompt')
-      .get('cancelButtonElement')
-      .addEventListener('click', this.get('resetHandler'));
+    this.prompt
+      .cancelButtonElement
+      .addEventListener('click', this.resetHandler);
   }
 
   setLogoutButtonEventListener() {
-    this.get('prompt')
-      .get('logoutButtonElement')
-      .addEventListener('click', this.get('logoutHandler'));
+    this.prompt
+      .logoutButtonElement
+      .addEventListener('click', this.logoutHandler);
   }
 
   createTimer() {
-    return new Timer(this.get('storage'), this.tick.bind(this));
+    return new Timer(this.storage, this.tick.bind(this));
   }
 
   log(message) {
-    if (this.getConfig('debug')) this.get('logger').log(message);
+    if (this.getConfig('debug')) this.logger.log(message);
   }
 
   getConfig(key) {
-    return this.get('config').get(key);
+    return this.config[key];
   }
 
   getTimeRemaining() {
-    const TIMER = this.get('timer');
-
-    return this.getConfig('maximumIdleDuration') - TIMER.getIdleTime();
+    return this.getConfig('maximumIdleDuration') - this.timer.getIdleTime();
   }
 
   reset() {
     this.log('Reverting document title...');
-    document.title = this.get('originalDocumentTitle');
+    document.title = this.originalDocumentTitle;
 
     this.log('Setting event listeners...');
     this.setEventListeners();
 
     this.log('Hiding prompt...');
-    this.get('prompt').hide();
+    this.prompt.hide();
 
     this.log('Stopping timer...');
-    this.get('timer').stop();
+    this.timer.stop();
 
     this.log('Assigning new timer...');
-    this.set('timer', this.createTimer());
+    this.timer = this.createTimer();
   }
 
   logOut() {
@@ -103,32 +98,32 @@ class IdleHands extends PropertyManager {
     document.title = this.getConfig('logoutDocumentTitle');
 
     this.log('Stopping timer...');
-    this.get('timer').stop();
+    this.timer.stop();
 
     this.log('Clearing start time...');
-    this.get('timer').clearStartTime();
+    this.timer.clearStartTime();
 
     this.log('Displaying logout message...');
-    this.get('prompt').displayLogoutMessage();
+    this.prompt.displayLogoutMessage();
 
     this.log('Redirecting to logout URL...');
     window.location.replace(this.getConfig('logoutUrl'));
   }
 
   tick() {
-    const TIMER = this.get('timer');
-    const HEARTBEAT_INTERVAL = this.get('config').get('heartbeatInterval');
+    const TIMER = this.timer;
+    const HEARTBEAT_INTERVAL = this.config['heartbeatInterval'];
     const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleDuration');
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
     const PROMPT_DURATION = this.getConfig('promptDuration');
-    const PROMPT = this.get('prompt');
-    const PROMPT_IS_DISPLAYED = PROMPT.get('isDisplayed');
+    const PROMPT = this.prompt;
+    const PROMPT_IS_DISPLAYED = PROMPT.isDisplayed;
 
     this.log('Tick...');
 
     if (TIME_REMAINING < 0) {
       this.log('Logging out...');
-      this.get('logoutHandler')();
+      this.logoutHandler();
 
       return;
     }
@@ -138,7 +133,7 @@ class IdleHands extends PropertyManager {
 
     if (TIME_REMAINING > PROMPT_DURATION && PROMPT_IS_DISPLAYED) {
       this.log('Updating document title...');
-      document.title = this.get('originalDocumentTitle');
+      document.title = this.originalDocumentTitle;
 
       this.log('Hiding prompt...');
       PROMPT.hide();
@@ -160,7 +155,7 @@ class IdleHands extends PropertyManager {
       this.logOut();
     } else if (TIMER.atInterval(HEARTBEAT_INTERVAL)) {
       this.log('Heartbeat...');
-      this.get('heartbeat').beat();
+      this.heartbeat.beat();
     }
   }
 

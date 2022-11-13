@@ -1,15 +1,11 @@
-import PropertyManager from "./PropertyManager.js";
-
-class Heartbeat extends PropertyManager {
+class Heartbeat {
 
   constructor(url) {
-    super();
-
-    this.set('url', url);
+    this.url = url;
   }
 
   beat() {
-    fetch(this.get('url'));
+    fetch(this.url);
   }
 
 }

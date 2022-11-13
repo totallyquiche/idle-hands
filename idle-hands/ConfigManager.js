@@ -1,30 +1,23 @@
-import PropertyManager from "./PropertyManager.js";
-
-class ConfigManager extends PropertyManager {
+class ConfigManager {
 
   constructor(configValues) {
-    super();
-
-    this.set('debug', false);
-    this.set('applicationId', window.location.hostname);
-    this.set('maximumIdleDuration', 60 * 1000 * 60); // 1 hour
-    this.set('heartbeatUrl', window.location.href);
-    this.set('heartbeatInterval', 60 * 1000); // 1 minute
-    this.set('documentTitle', 'Session Expiration Warning');
-    this.set('logoutDocumentTitle', 'Logging out...');
-    this.set('promptDuration', 30 * 1000); // 30 seconds
-    this.set('promptContainerSelector', 'body');
-    this.set('promptZindex', 9999);
-    this.set('promptTimeRemainingTemplate', '%time seconds remaining');
-    this.set('promptHeaderText', 'Session Expiration Warning');
-    this.set(
-      'promptDialogText',
-      'Your session is about to expire due to inactivity.'
-    );
-    this.set('promptCancelButtonText', 'Stay Logged In');
-    this.set('promptLogoutButtonText', 'Log Out Now');
-    this.set('promptLogoutText', 'Logging out...');
-    this.set('events',  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
+    this.debug = false;
+    this.applicationId = window.location.hostname;
+    this.maximumIdleDuration = 60 * 1000 * 60; // 1 hoor;
+    this.heartbeatUrl = window.location.href;
+    this.heartbeatInterval = 60 * 1000; // 1 minute;
+    this.documentTitle = 'Session Expiration Warning';
+    this.logoutDocumentTitle = 'Logging out...';
+    this.promptDuration = 30 * 1000; // 30 seconds;
+    this.promptContainerSelector = 'body';
+    this.promptZindex = 9999;
+    this.promptTimeRemainingTemplate = '%time seconds remaining';
+    this.promptHeaderText = 'Session Expiration Warning';
+    this.promptDialogText = 'Your session is about to expire due to inactivity.';
+    this.promptCancelButtonText = 'Stay Logged In';
+    this.promptLogoutButtonText = 'Log Out Now';
+    this.promptLogoutText = 'Logging out...';
+    this.events =  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'];
 
     // this.set('automaticLogOutUrl', window.location.href);
     // this.set('manualLogOutUrl', window.location.href);
@@ -34,7 +27,7 @@ class ConfigManager extends PropertyManager {
     }
 
     for (const key in configValues) {
-      this.set(key, configValues[key]);
+      this[key] = configValues[key];
     }
   }
 
