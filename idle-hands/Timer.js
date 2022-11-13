@@ -8,9 +8,8 @@ class Timer extends PropertyManager {
     if (!storage) throw new TypeError('storage must be defined');
 
     this.set('storage', storage);
-    this.set('startTime', this.getCurrentTime());
 
-    this.get('storage').set('startTime', this.get('startTime'));
+    this.setStartTime();
 
     this.set('tickInterval', setInterval(tick, 1000));
   }
@@ -19,8 +18,16 @@ class Timer extends PropertyManager {
     return (new Date).getTime();
   }
 
+  setStartTime() {
+    this.get('storage').set('startTime', this.getCurrentTime());
+  }
+
+  getStartTime() {
+    return this.get('storage').get('startTime');
+  }
+
   getIdleTime() {
-    const REAL_IDLE_TIME = this.getCurrentTime() - this.get('startTime');
+    const REAL_IDLE_TIME = this.getCurrentTime() - this.getStartTime();
 
     return REAL_IDLE_TIME - (REAL_IDLE_TIME % 1000);
   }
