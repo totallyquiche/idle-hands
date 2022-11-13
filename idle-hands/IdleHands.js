@@ -1,6 +1,6 @@
 import PropertyManager from './PropertyManager.js';
-import Logger from './Logger.js';
 import ConfigManager from './ConfigManager.js';
+import Logger from './Logger.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
@@ -11,8 +11,8 @@ class IdleHands extends PropertyManager {
   constructor(config = {}) {
     super()
 
-    this.set('logger', new Logger);
     this.set('config', new ConfigManager(config));
+    this.set('logger', new Logger(this.getConfig('applicationId')));
     this.set(
       'prompt',
       new Prompt(
