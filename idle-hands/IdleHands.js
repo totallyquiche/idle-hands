@@ -93,6 +93,7 @@ class IdleHands extends PropertyManager {
   }
 
   reset() {
+    this.log('Resetting...');
     this.setEventListeners();
     this.get('prompt').hide();
     this.get('timer').stop();
