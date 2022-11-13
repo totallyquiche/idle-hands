@@ -13,20 +13,17 @@ class ConfigManager extends PropertyManager {
     this.set('promptDuration', 30 * 1000); // 30 seconds
     this.set('promptContainerSelector', 'body');
     this.set('events',  [ 'click', 'keypress', 'scroll', 'wheel', 'mousewheel' ]);
+    this.set('promptZindex', 9999);
 
     // this.set('automaticLogOutUrl', window.location.href);
-    // this.set('containerElement', document.getElementsByTagName('body')[0]);
     // this.set('dialogCountDownMessage', 'Time remaining: ');
     // this.set('dialogLogOutButtonText', 'Log Out Now');
     // this.set('dialogMessage', 'Your session is about to expire due to inactivity.');
     // this.set('dialogStayLoggedInButtonText', 'Stay Logged In');
     // this.set('dialogTitle', 'Session Expiration Warning');
     // this.set('documentTitle', 'Session Expiration Warning');
-    // this.set('eventListeners', ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
-    // this.set('logOutUrl', null);
     // this.set('loggingOutDocumentTitle', 'Logging Out...');
     // this.set('manualLogOutUrl', window.location.href);
-    // this.set('overlayZindex', 9999);
 
     if (!configValues['logoutUrl']) {
       throw new TypeError('logoutUrl must be defined');

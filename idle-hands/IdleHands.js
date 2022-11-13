@@ -13,7 +13,13 @@ class IdleHands extends PropertyManager {
 
     this.set('logger', new Logger);
     this.set('config', new ConfigManager(config));
-    this.set('prompt', new Prompt(this.getConfig('promptContainerSelector')));
+    this.set(
+      'prompt',
+      new Prompt(
+        this.getConfig('promptContainerSelector'),
+        this.getConfig('promptZindex')
+      )
+    );
     this.set('storage', new Storage(this.getConfig('applicationId')));
     this.set('timer', this.createTimer());
     this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));

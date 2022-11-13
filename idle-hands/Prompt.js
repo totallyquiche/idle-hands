@@ -2,7 +2,7 @@ import PropertyManager from "./PropertyManager.js";
 
 class Prompt extends PropertyManager{
 
-  constructor(containerSelector) {
+  constructor(containerSelector, zIndex) {
     super();
 
     this.set('isDisplayed', false);
@@ -10,7 +10,7 @@ class Prompt extends PropertyManager{
     this.set('logoutMessageElement', this.buildLogoutMessageElement());
     this.set('cancelButtonElement', this.buildCancelButtonElement());
     this.set('logoutButtonElement', this.buildLogoutButtonElement());
-    this.set('promptElement', this.buildPromptElement());
+    this.set('promptElement', this.buildPromptElement(zIndex));
 
     document.querySelector(containerSelector)
       .appendChild(this.get('promptElement'));
@@ -30,7 +30,7 @@ class Prompt extends PropertyManager{
     this.get('promptElement').style.display = 'none';
   }
 
-  buildPromptElement() {
+  buildPromptElement(zIndex) {
     const PROMPT_ELEMENT = document.createElement('div');
 
     PROMPT_ELEMENT.style.display = 'none';
@@ -39,6 +39,7 @@ class Prompt extends PropertyManager{
     PROMPT_ELEMENT.style.alignItems = 'center';
     PROMPT_ELEMENT.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     PROMPT_ELEMENT.style.color = 'white';
+    PROMPT_ELEMENT.style.zIndex = zIndex;
 
     PROMPT_ELEMENT.appendChild(this.buildDialogElement());
 
