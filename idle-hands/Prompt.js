@@ -7,6 +7,7 @@ class Prompt extends PropertyManager{
     zIndex,
     timeRemainingTemplate,
     headerText,
+    dialogText,
     cancelButtonText,
     logoutButtonText,
     logoutText
@@ -15,12 +16,16 @@ class Prompt extends PropertyManager{
 
     this.set('isDisplayed', false);
     this.set('headerElement', this.buildHeaderElement(headerText));
+    this.set('dialogTextElement', this.buildDialogTextElement(dialogText));
     this.set('timeElement', this.buildTimeElement());
     this.set(
       'timeRemainingElement',
       this.buildTimeRemainingElement(timeRemainingTemplate)
     );
-    this.set('logoutMessageElement', this.buildLogoutMessageElement(logoutText));
+    this.set(
+      'logoutMessageElement',
+      this.buildLogoutMessageElement(logoutText)
+    );
     this.set(
       'cancelButtonElement',
       this.buildCancelButtonElement(cancelButtonText)
@@ -29,6 +34,7 @@ class Prompt extends PropertyManager{
       'logoutButtonElement',
       this.buildLogoutButtonElement(logoutButtonText)
     );
+    this.set('dialogElement', this.buildDialogElement());
     this.set('promptElement', this.buildPromptElement(zIndex));
 
     document.querySelector(containerSelector)
@@ -60,7 +66,7 @@ class Prompt extends PropertyManager{
     PROMPT_ELEMENT.style.color = 'white';
     PROMPT_ELEMENT.style.zIndex = zIndex;
 
-    PROMPT_ELEMENT.appendChild(this.buildDialogElement());
+    PROMPT_ELEMENT.appendChild(this.get('dialogElement'));
 
     PROMPT_ELEMENT.classList.add('idle-hands-prompt');
 
@@ -71,6 +77,7 @@ class Prompt extends PropertyManager{
     const DIALOG_ELEMENT = document.createElement('div');
 
     DIALOG_ELEMENT.appendChild(this.getHeaderElement());
+    DIALOG_ELEMENT.appendChild(this.getDialogTextElement());
     DIALOG_ELEMENT.appendChild(this.getTimeRemainingElement());
     DIALOG_ELEMENT.appendChild(this.getLogoutMessageElement());
     DIALOG_ELEMENT.appendChild(this.getCancelButtonElement());
@@ -98,6 +105,18 @@ class Prompt extends PropertyManager{
 
   getHeaderElement() {
     return this.get('headerElement');
+  }
+
+  buildDialogTextElement(dialogText) {
+    const DIALOG_TEXT_ELEMENT = document.createElement('span');
+
+    DIALOG_TEXT_ELEMENT.innerText = dialogText;
+
+    return DIALOG_TEXT_ELEMENT;
+  }
+
+  getDialogTextElement() {
+    return this.get('dialogTextElement');
   }
 
   buildTimeRemainingElement(timeRemainingTemplate) {

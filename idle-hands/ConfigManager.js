@@ -15,6 +15,10 @@ class ConfigManager extends PropertyManager {
     this.set('promptZindex', 9999);
     this.set('promptTimeRemainingTemplate', '%time seconds remaining');
     this.set('promptHeaderText', 'Session Expiration Warning');
+    this.set(
+      'promptDialogText',
+      'Your session is about to expire due to inactivity.'
+    );
     this.set('promptCancelButtonText', 'Cancel');
     this.set('promptLogoutButtonText', 'Log Out');
     this.set('promptLogoutText', 'Logging out...');

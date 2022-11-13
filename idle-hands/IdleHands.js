@@ -31,6 +31,7 @@ class IdleHands extends PropertyManager {
       this.getConfig('promptZindex'),
       this.getConfig('promptTimeRemainingTemplate'),
       this.getConfig('promptHeaderText'),
+      this.getConfig('promptDialogText'),
       this.getConfig('promptCancelButtonText'),
       this.getConfig('promptLogoutButtonText'),
       this.getConfig('promptLogoutText')
