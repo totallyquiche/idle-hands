@@ -20,17 +20,24 @@ class IdleHands extends PropertyManager {
     this.set('resetHandler', this.reset.bind(this));
 
     this.setEventListeners();
-
-    document.getElementById('idle-hands-prompt-cancel-button')
-      .addEventListener('click', this.get('resetHandler'));
+    this.setCancelButtonEventListener();
   }
 
   setEventListeners() {
-    document.addEventListener('click', this.get('resetHandler'));
+    this.getConfig('events').forEach(function(event) {
+      document.addEventListener(event, this.get('resetHandler'));
+    }.bind(this));
   }
 
   unsetEventListeners() {
-    document.removeEventListener('click', this.get('resetHandler'));
+    this.getConfig('events').forEach(function(event) {
+      document.removeEventListener(event, this.get('resetHandler'));
+    }.bind(this));
+  }
+
+  setCancelButtonEventListener() {
+    document.getElementById('idle-hands-prompt-cancel-button')
+      .addEventListener('click', this.get('resetHandler'));
   }
 
   getTimer() {
