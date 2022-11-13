@@ -11,6 +11,7 @@ class IdleHands extends PropertyManager {
   constructor(config = {}) {
     super()
 
+    this.set('originalDocumentTitle', document.title);
     this.set('config', new ConfigManager(config));
     this.set('logger', new Logger(this.getConfig('applicationId')));
     this.set('prompt', this.getPrompt());
@@ -79,6 +80,9 @@ class IdleHands extends PropertyManager {
   }
 
   reset() {
+    this.log('Reverting document title...');
+    document.title = this.get('originalDocumentTitle');
+
     this.log('Setting event listeners...');
     this.setEventListeners();
 
@@ -93,6 +97,9 @@ class IdleHands extends PropertyManager {
   }
 
   logOut() {
+    this.log('Updating document title...');
+    document.title = this.getConfig('logoutDocumentTitle');
+
     this.log('Stopping timer...');
     this.get('timer').stop();
 
@@ -128,11 +135,17 @@ class IdleHands extends PropertyManager {
     PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
 
     if (TIME_REMAINING > PROMPT_DURATION && PROMPT_IS_DISPLAYED) {
+      this.log('Updating document title...');
+      document.title = this.get('originalDocumentTitle');
+
       this.log('Hiding prompt...');
       PROMPT.hide();
     }
 
     if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
+      this.log('Updating document title...');
+      document.title = this.getConfig('documentTitle');
+
       this.log('Unsetting event listeners...');
       this.unsetEventListeners();
 
