@@ -2,11 +2,15 @@ import PropertyManager from "./PropertyManager.js";
 
 class Prompt extends PropertyManager{
 
-  constructor(containerSelector, zIndex) {
+  constructor(containerSelector, zIndex, timeRemainingTemplate) {
     super();
 
     this.set('isDisplayed', false);
     this.set('timeElement', this.buildTimeElement());
+    this.set(
+      'timeRemainingElement',
+      this.buildTimeRemainingElement(timeRemainingTemplate)
+    );
     this.set('logoutMessageElement', this.buildLogoutMessageElement());
     this.set('cancelButtonElement', this.buildCancelButtonElement());
     this.set('logoutButtonElement', this.buildLogoutButtonElement());
@@ -52,7 +56,7 @@ class Prompt extends PropertyManager{
     const DIALOG_ELEMENT = document.createElement('div');
 
     DIALOG_ELEMENT.appendChild(this.buildHeaderElement());
-    DIALOG_ELEMENT.appendChild(this.getTimeElement());
+    DIALOG_ELEMENT.appendChild(this.getTimeRemainingElement());
     DIALOG_ELEMENT.appendChild(this.getLogoutMessageElement());
     DIALOG_ELEMENT.appendChild(this.getCancelButtonElement());
     DIALOG_ELEMENT.appendChild(this.getLogoutButtonElement());
@@ -75,6 +79,33 @@ class Prompt extends PropertyManager{
     HEADER_ELEMENT.style.fontSize = '1.5em';
 
     return HEADER_ELEMENT;
+  }
+
+  buildTimeRemainingElement(timeRemainingTemplate) {
+    const TIME_REMAINING_ELEMENT = document.createElement('span');
+    const TEMPLATE_PARTS = timeRemainingTemplate.split('%time');
+
+    if (TEMPLATE_PARTS.length !== 2) {
+      throw new SyntaxError(
+        'timeRemainingTemplate must contain a single "%time" placeholder'
+      );
+    }
+
+    const PREFIX_ELEMENT = document.createElement('span');
+    const SUFFIX_ELEMENT = document.createElement('span');
+
+    PREFIX_ELEMENT.innerText = TEMPLATE_PARTS[0];
+    SUFFIX_ELEMENT.innerText = TEMPLATE_PARTS[1];
+
+    TIME_REMAINING_ELEMENT.appendChild(PREFIX_ELEMENT);
+    TIME_REMAINING_ELEMENT.appendChild(this.getTimeElement());
+    TIME_REMAINING_ELEMENT.appendChild(SUFFIX_ELEMENT);
+
+    return TIME_REMAINING_ELEMENT;
+  }
+
+  getTimeRemainingElement() {
+    return this.get('timeRemainingElement');
   }
 
   buildCancelButtonElement() {
@@ -118,7 +149,7 @@ class Prompt extends PropertyManager{
   }
 
   displayLogoutMessage() {
-    this.getTimeElement().style.display = 'none';
+    this.getTimeRemainingElement().style.display = 'none';
     this.getCancelButtonElement().disabled = true;
     this.getLogoutButtonElement().disabled = true;
     this.getLogoutMessageElement().style.display = 'inline';
