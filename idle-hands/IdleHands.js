@@ -13,18 +13,7 @@ class IdleHands extends PropertyManager {
 
     this.set('config', new ConfigManager(config));
     this.set('logger', new Logger(this.getConfig('applicationId')));
-    this.set(
-      'prompt',
-      new Prompt(
-        this.getConfig('promptContainerSelector'),
-        this.getConfig('promptZindex'),
-        this.getConfig('promptTimeRemainingTemplate'),
-        this.getConfig('promptHeaderText'),
-        this.getConfig('promptCancelButtonText'),
-        this.getConfig('promptLogoutButtonText'),
-        this.getConfig('promptLogoutText')
-      )
-    );
+    this.set('prompt', this.getPrompt());
     this.set('storage', new Storage(this.getConfig('applicationId')));
     this.set('timer', this.createTimer());
     this.set('heartbeat', new Heartbeat(this.getConfig('heartbeatUrl')));
@@ -34,6 +23,18 @@ class IdleHands extends PropertyManager {
     this.setEventListeners();
     this.setCancelButtonEventListener();
     this.setLogoutButtonEventListener();
+  }
+
+  getPrompt() {
+    return new Prompt(
+      this.getConfig('promptContainerSelector'),
+      this.getConfig('promptZindex'),
+      this.getConfig('promptTimeRemainingTemplate'),
+      this.getConfig('promptHeaderText'),
+      this.getConfig('promptCancelButtonText'),
+      this.getConfig('promptLogoutButtonText'),
+      this.getConfig('promptLogoutText')
+    );
   }
 
   setEventListeners() {
