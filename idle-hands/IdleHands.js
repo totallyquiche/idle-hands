@@ -65,6 +65,19 @@ class IdleHands extends PropertyManager {
     return this.getConfig('maximumIdleDuration') - TIMER.getIdleTime();
   }
 
+  reset() {
+    this.log('Resetting...');
+    this.setEventListeners();
+    this.get('prompt').hide();
+    this.get('timer').stop();
+    this.set('timer', this.createTimer());
+  }
+
+  logOut() {
+    this.get('timer').stop();
+    window.location.replace(this.getConfig('logoutUrl'));
+  }
+
   tick() {
     const TIMER = this.get('timer');
     const HEARTBEAT_INTERVAL = this.get('config').get('heartbeatInterval');
@@ -93,19 +106,6 @@ class IdleHands extends PropertyManager {
       this.log('Heartbeat...');
       this.get('heartbeat').beat();
     }
-  }
-
-  reset() {
-    this.log('Resetting...');
-    this.setEventListeners();
-    this.get('prompt').hide();
-    this.get('timer').stop();
-    this.set('timer', this.createTimer());
-  }
-
-  logOut() {
-    this.get('timer').stop();
-    window.location.replace(this.getConfig('logoutUrl'));
   }
 
 };
