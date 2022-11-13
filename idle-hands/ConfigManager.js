@@ -14,6 +14,7 @@ class ConfigManager extends PropertyManager {
     this.set('promptContainerSelector', 'body');
     this.set('promptZindex', 9999);
     this.set('promptTimeRemainingTemplate', '%time seconds remaining');
+    this.set('promptHeaderText', 'Session Expiration Warning');
     this.set('events',  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel']);
 
     // this.set('automaticLogOutUrl', window.location.href);

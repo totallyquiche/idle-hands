@@ -18,7 +18,8 @@ class IdleHands extends PropertyManager {
       new Prompt(
         this.getConfig('promptContainerSelector'),
         this.getConfig('promptZindex'),
-        this.getConfig('promptTimeRemainingTemplate')
+        this.getConfig('promptTimeRemainingTemplate'),
+        this.getConfig('promptHeaderText')
       )
     );
     this.set('storage', new Storage(this.getConfig('applicationId')));

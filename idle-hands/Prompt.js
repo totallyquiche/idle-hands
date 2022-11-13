@@ -2,10 +2,16 @@ import PropertyManager from "./PropertyManager.js";
 
 class Prompt extends PropertyManager{
 
-  constructor(containerSelector, zIndex, timeRemainingTemplate) {
+  constructor(
+    containerSelector,
+    zIndex,
+    timeRemainingTemplate,
+    headerText
+  ) {
     super();
 
     this.set('isDisplayed', false);
+    this.set('headerElement', this.buildHeaderElement(headerText));
     this.set('timeElement', this.buildTimeElement());
     this.set(
       'timeRemainingElement',
@@ -55,7 +61,7 @@ class Prompt extends PropertyManager{
   buildDialogElement() {
     const DIALOG_ELEMENT = document.createElement('div');
 
-    DIALOG_ELEMENT.appendChild(this.buildHeaderElement());
+    DIALOG_ELEMENT.appendChild(this.getHeaderElement());
     DIALOG_ELEMENT.appendChild(this.getTimeRemainingElement());
     DIALOG_ELEMENT.appendChild(this.getLogoutMessageElement());
     DIALOG_ELEMENT.appendChild(this.getCancelButtonElement());
@@ -72,13 +78,17 @@ class Prompt extends PropertyManager{
     return this.get('timeElement');
   }
 
-  buildHeaderElement() {
+  buildHeaderElement(headerText) {
     const HEADER_ELEMENT = document.createElement('div');
 
-    HEADER_ELEMENT.innerText = 'Session Expiration Warning';
+    HEADER_ELEMENT.innerText = headerText;
     HEADER_ELEMENT.style.fontSize = '1.5em';
 
     return HEADER_ELEMENT;
+  }
+
+  getHeaderElement() {
+    return this.get('headerElement');
   }
 
   buildTimeRemainingElement(timeRemainingTemplate) {
