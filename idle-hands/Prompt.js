@@ -6,7 +6,9 @@ class Prompt extends PropertyManager{
     containerSelector,
     zIndex,
     timeRemainingTemplate,
-    headerText
+    headerText,
+    cancelButtonText,
+    logoutButtonText
   ) {
     super();
 
@@ -18,8 +20,14 @@ class Prompt extends PropertyManager{
       this.buildTimeRemainingElement(timeRemainingTemplate)
     );
     this.set('logoutMessageElement', this.buildLogoutMessageElement());
-    this.set('cancelButtonElement', this.buildCancelButtonElement());
-    this.set('logoutButtonElement', this.buildLogoutButtonElement());
+    this.set(
+      'cancelButtonElement',
+      this.buildCancelButtonElement(cancelButtonText)
+    );
+    this.set(
+      'logoutButtonElement',
+      this.buildLogoutButtonElement(logoutButtonText)
+    );
     this.set('promptElement', this.buildPromptElement(zIndex));
 
     document.querySelector(containerSelector)
@@ -118,10 +126,10 @@ class Prompt extends PropertyManager{
     return this.get('timeRemainingElement');
   }
 
-  buildCancelButtonElement() {
+  buildCancelButtonElement(cancelButtonText) {
     const CANCEL_BUTTON_ELEMENT = document.createElement('button');
 
-    CANCEL_BUTTON_ELEMENT.innerText = 'Cancel';
+    CANCEL_BUTTON_ELEMENT.innerText = cancelButtonText;
     CANCEL_BUTTON_ELEMENT.id = 'idle-hands-prompt-cancel-button';
 
     return CANCEL_BUTTON_ELEMENT;
@@ -131,10 +139,10 @@ class Prompt extends PropertyManager{
     return this.get('cancelButtonElement');
   }
 
-  buildLogoutButtonElement() {
+  buildLogoutButtonElement(logoutButtonText) {
     const LOGOUT_BUTTON_ELEMENT = document.createElement('button');
 
-    LOGOUT_BUTTON_ELEMENT.innerText = 'Log Out';
+    LOGOUT_BUTTON_ELEMENT.innerText = logoutButtonText;
     LOGOUT_BUTTON_ELEMENT.id = 'idle-hands-prompt-logout-button';
 
     return LOGOUT_BUTTON_ELEMENT;
