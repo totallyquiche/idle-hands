@@ -26,6 +26,10 @@ class Timer extends PropertyManager {
     return this.get('storage').get('startTime');
   }
 
+  clearStartTime() {
+    this.get('storage').delete('startTime');
+  }
+
   getIdleTime() {
     const REAL_IDLE_TIME = this.getCurrentTime() - this.getStartTime();
 

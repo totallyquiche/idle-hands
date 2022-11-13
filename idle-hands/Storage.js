@@ -16,6 +16,10 @@ class Storage {
     return localStorage.getItem(this.prefix + key);
   }
 
+  delete(key) {
+    localStorage.removeItem(this.prefix + key);
+  }
+
 };
 
 export default Storage;

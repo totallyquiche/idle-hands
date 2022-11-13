@@ -80,7 +80,16 @@ class IdleHands extends PropertyManager {
   }
 
   logOut() {
+    this.log('Stopping timer...');
     this.get('timer').stop();
+
+    this.log('Clearing start time...');
+    this.get('timer').clearStartTime();
+
+    this.log('Displaying logout message...');
+    this.get('prompt').displayLogoutMessage();
+
+    this.log('Redirecting to logout URL...');
     window.location.replace(this.getConfig('logoutUrl'));
   }
 
@@ -95,8 +104,20 @@ class IdleHands extends PropertyManager {
 
     this.log('Tick...');
 
+    if (TIME_REMAINING < 0) {
+      this.log('Logging out...');
+      this.get('logoutHandler')();
+
+      return;
+    }
+
     this.log('Updating prompt...');
     PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
+
+    if (TIME_REMAINING > PROMPT_DURATION && PROMPT_IS_DISPLAYED) {
+      this.log('Hiding prompt...');
+      PROMPT.hide();
+    }
 
     if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
       this.log('Unsetting event listeners...');
