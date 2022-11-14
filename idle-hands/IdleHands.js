@@ -51,18 +51,6 @@ class IdleHands {
       .document
       .body
       .appendChild(this.iframe.prompt.element);
-
-    this.iframe
-      .element
-      .contentWindow
-      .document
-      .body
-      .style
-      .setProperty(
-        'font-size',
-        window.getComputedStyle(document.body, null)
-        .getPropertyValue('font-size')
-      );
   }
 
   createPromptElement() {
@@ -74,7 +62,9 @@ class IdleHands {
       this.config.promptLogoutText,
       this.config.promptCancelButtonText,
       this.config.promptLogoutButtonText,
-      this.config.promptZindex
+      this.config.promptZindex,
+      window.getComputedStyle(document.body, null)
+        .getPropertyValue('font-size')
     );
   }
 

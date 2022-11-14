@@ -18,7 +18,8 @@ class PromptFactory {
     logoutText,
     cancelButtonText,
     logoutButtonText,
-    zIndex
+    zIndex,
+    fontSize
   ) {
 
     const DIALOG = new Dialog(
@@ -30,7 +31,7 @@ class PromptFactory {
       new LogoutButton(logoutButtonText)
   );
 
-    return new Prompt(DIALOG, zIndex);
+    return new Prompt(DIALOG, zIndex, fontSize);
   }
 
 }

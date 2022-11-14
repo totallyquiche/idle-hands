@@ -4,7 +4,7 @@ class Prompt extends Div {
 
   dialog;
 
-  constructor(dialog, zIndex) {
+  constructor(dialog, zIndex, fontSize) {
     super(
       'idle-hands-prompt',
       [dialog.element],
@@ -16,6 +16,7 @@ class Prompt extends Div {
         'left': '0',
         'background-image': 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNksAcAAEUAQRtOwGEAAAAASUVORK5CYII=")',
         'z-index': zIndex,
+        'font-size': fontSize,
       }
     );
 
