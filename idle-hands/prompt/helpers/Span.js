@@ -1,9 +1,11 @@
 import Element from "./Element.js";
 
-class Span {
+class Span extends Element {
 
-  static create(text = '', children = [], styles = {}, allowHtml) {
-    return Element.create(
+  constructor(text = '', children = [], styles = {}, allowHtml = false) {
+    super();
+
+    this.element = this.create(
       'span',
       '',
       [],

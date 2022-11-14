@@ -1,9 +1,13 @@
 import Span from "../helpers/Span.js"
 
-class Time {
+class Time extends Span {
 
-  static create() {
-    return Span.create();
+  constructor() {
+    super();
+  }
+
+  update(time) {
+    this.element.innerText = time;
   }
 
 }

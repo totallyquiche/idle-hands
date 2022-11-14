@@ -1,9 +1,9 @@
 import Button from "../helpers/Button.js";
 
-class LogoutButton {
+class LogoutButton extends Button {
 
-  static create(text) {
-    return Button.create('idle-hands-prompt-logout-button', text);
+  constructor(text) {
+    super('idle-hands-prompt-logout-button', text);
   }
 
 }

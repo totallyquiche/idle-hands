@@ -1,9 +1,9 @@
 import Span from "../helpers/Span.js"
 
-class Header {
+class Header extends Span {
 
-  static create(text) {
-    return Span.create(
+  constructor(text) {
+    super(
       text,
       [],
       {

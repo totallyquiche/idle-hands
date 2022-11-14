@@ -1,11 +1,13 @@
 import Div from "../helpers/Div.js";
 
-class Prompt {
+class Prompt extends Div {
 
-  static create(dialogElement, zIndex) {
-    const ELEMENT = Div.create(
+  dialog;
+
+  constructor(dialog, zIndex) {
+    super(
       'idle-hands-prompt',
-      [dialogElement],
+      [dialog.element],
       {
         'position': 'fixed',
         'height': '100%',
@@ -17,9 +19,7 @@ class Prompt {
       }
     );
 
-    ELEMENT.dialogElement = dialogElement;
-
-    return ELEMENT;
+    this.dialog = dialog;
   }
 
 }

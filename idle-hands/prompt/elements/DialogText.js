@@ -1,9 +1,9 @@
 import Span from "../helpers/Span.js"
 
-class DialogText {
+class DialogText extends Span {
 
-  static create(text, allowHtml) {
-    return Span.create(
+  constructor(text, allowHtml) {
+    super(
       text,
       [],
       {

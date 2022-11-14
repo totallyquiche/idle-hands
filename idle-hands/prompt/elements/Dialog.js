@@ -1,22 +1,29 @@
 import Div from "../helpers/Div.js"
 
-class Dialog {
+class Dialog extends Div {
 
-  static create(
-    headerElement,
-    dialogElement,
-    timeRemainingElement,
-    logoutMessageElement,
-    cancelButtonElement,
-    logoutButtonElement
+  header;
+  dialog;
+  timeRemaining;
+  logoutMessage;
+  cancelButton;
+  logoutButton;
+
+  constructor(
+    header,
+    dialog,
+    timeRemaining,
+    logoutMessage,
+    cancelButton,
+    logoutButton
   ) {
     const CHILDREN = [
-      headerElement,
-      dialogElement,
-      timeRemainingElement,
-      logoutMessageElement,
-      cancelButtonElement,
-      logoutButtonElement,
+      header.element,
+      dialog.element,
+      timeRemaining.element,
+      logoutMessage.element,
+      cancelButton.element,
+      logoutButton.element,
     ];
 
     const STYLES = {
@@ -32,16 +39,14 @@ class Dialog {
       'color': '#333',
     };
 
-    const ELEMENT = Div.create('idle-hands-dialog', CHILDREN, STYLES);
+    super('idle-hands-dialog', CHILDREN, STYLES);
 
-    ELEMENT.headerElement = headerElement;
-    ELEMENT.dialogElement = dialogElement;
-    ELEMENT.timeRemainingElement = timeRemainingElement;
-    ELEMENT.logoutMessageElement = logoutMessageElement;
-    ELEMENT.cancelButtonElement = cancelButtonElement;
-    ELEMENT.logoutButtonElement = logoutButtonElement;
-
-    return ELEMENT;
+    this.header = header;
+    this.dialog = dialog;
+    this.timeRemaining = timeRemaining;
+    this.logoutMessage = logoutMessage;
+    this.cancelButton = cancelButton;
+    this.logoutButton = logoutButton;
   }
 
 }

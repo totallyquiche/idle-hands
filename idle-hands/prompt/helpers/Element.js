@@ -1,6 +1,8 @@
 class Element {
 
-  static create(
+  element;
+
+  create(
     tagName,
     id = '',
     classNames = [],

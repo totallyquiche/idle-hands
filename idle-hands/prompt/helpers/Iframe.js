@@ -1,9 +1,14 @@
 import Element from "./Element.js";
 
-class Iframe {
+class Iframe extends Element {
 
-  static create(promptElement) {
-    const ELEMENT = Element.create(
+  prompt;
+  isDisplayed;
+
+  constructor(prompt) {
+    super();
+
+    this.element = this.create(
       'iframe',
       '',
       [],
@@ -18,18 +23,18 @@ class Iframe {
       }
     );
 
-    ELEMENT.promptElement = promptElement;
-    ELEMENT.isDisplayed = false;
-    ELEMENT.display = function() {
-      ELEMENT.style.display = 'block';
-      ELEMENT.isDisplayed = true;
-    }
-    ELEMENT.hide = function() {
-      ELEMENT.style.display = 'none';
-      ELEMENT.isDisplayed = false;
-    }
+    this.prompt = prompt;
+    this.isDisplayed = false;
+  }
 
-    return ELEMENT;
+  display() {
+    this.element.style.display = 'block';
+    this.isDisplayed = 'true';
+  }
+
+  hide() {
+    this.element.style.display = 'none';
+    this.isDisplayed = false;
   }
 
 }

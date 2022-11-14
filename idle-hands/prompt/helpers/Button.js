@@ -1,9 +1,11 @@
 import Element from "./Element.js";
 
-class Button {
+class Button extends Element {
 
-  static create(id, text) {
-    return Element.create(
+  constructor(id, text) {
+    super()
+
+    this.element = this.create(
       'button',
       id,
       [],

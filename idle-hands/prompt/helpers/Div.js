@@ -1,9 +1,11 @@
 import Element from "./Element.js";
 
-class Div {
+class Div extends Element {
 
-  static create(id, children, styles = {}) {
-    return Element.create(
+  constructor(id, children, styles = {}) {
+    super();
+
+    this.element = this.create(
       'div',
       id,
       [],

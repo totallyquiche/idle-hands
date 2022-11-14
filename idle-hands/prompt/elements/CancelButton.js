@@ -1,9 +1,9 @@
 import Button from "../helpers/Button.js";
 
-class CancelButton {
+class CancelButton extends Button {
 
-  static create(text) {
-    return Button.create('idle-hands-prompt-cancel-button', text);
+  constructor(text) {
+    super('idle-hands-prompt-cancel-button', text);
   }
 
 }

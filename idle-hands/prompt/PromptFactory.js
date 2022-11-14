@@ -21,16 +21,16 @@ class PromptFactory {
     zIndex
   ) {
 
-    this.dialogElement = Dialog.create(
-      Header.create(headerText),
-      DialogText.create(dialogText, dialogTextAllowHtml),
-      TimeRemaining.create(timeRemainingTemplate, Time.create()),
-      LogoutMessage.create(logoutText),
-      CancelButton.create(cancelButtonText),
-      LogoutButton.create(logoutButtonText)
+    const DIALOG = new Dialog(
+      new Header(headerText),
+      new DialogText(dialogText, dialogTextAllowHtml),
+      new TimeRemaining(timeRemainingTemplate, new Time()),
+      new LogoutMessage(logoutText),
+      new CancelButton(cancelButtonText),
+      new LogoutButton(logoutButtonText)
   );
 
-    return Prompt.create(this.dialogElement, zIndex);
+    return new Prompt(DIALOG, zIndex);
   }
 
 }

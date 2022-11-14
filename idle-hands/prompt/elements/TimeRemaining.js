@@ -1,8 +1,10 @@
 import Span from "../helpers/Span.js";
 
-class TimeRemaining {
+class TimeRemaining extends Span {
 
-  static create(timeRemainingTemplate, timeElement) {
+  time;
+
+  constructor(timeRemainingTemplate, time) {
     const TEMPLATE_PARTS = timeRemainingTemplate.split('%time');
 
     if (TEMPLATE_PARTS.length > 2) {
@@ -15,15 +17,15 @@ class TimeRemaining {
 
     if (TEMPLATE_PARTS.length === 2) {
       children = [
-        Span.create(TEMPLATE_PARTS[0]),
-        timeElement,
-        Span.create(TEMPLATE_PARTS[1]),
+        new Span(TEMPLATE_PARTS[0]).element,
+        time.element,
+        new Span(TEMPLATE_PARTS[1]).element,
       ];
     } else {
-      children = [Span.create(timeRemainingTemplate)];
+      children = [new Span(timeRemainingTemplate).element];
     }
 
-    const ELEMENT = Span.create(
+    super(
       '',
       children,
       {
@@ -32,12 +34,7 @@ class TimeRemaining {
       }
     );
 
-    ELEMENT.timeElement = timeElement;
-    ELEMENT.updateTime = function(timeRemaining) {
-      ELEMENT.timeElement.innerText = timeRemaining;
-    };
-
-    return ELEMENT;
+    this.time = time;
   }
 
 }
