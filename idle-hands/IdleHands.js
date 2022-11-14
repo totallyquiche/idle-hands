@@ -4,6 +4,7 @@ import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
 import PromptFactory from './prompt/PromptFactory.js';
+import Iframe from './prompt/helpers/Iframe.js';
 
 class IdleHands {
 
@@ -14,7 +15,6 @@ class IdleHands {
 
     this.originalDocumentTitle = document.title;
     this.logger = new Logger(APPLICATION_ID);
-    this.prompt = this.createPrompt();
     this.storage = new Storage(APPLICATION_ID);
     this.timer = this.createTimer();
     this.heartbeat = new Heartbeat(this.config.heartbeatUrl);
@@ -23,15 +23,37 @@ class IdleHands {
 
     this.storage.set('logoutUrl', this.config.logoutUrl);
 
-    document.querySelector(this.config.promptContainerSelector)
-      .appendChild(this.prompt);
-
+    this.setIframeElement();
     this.setEventListeners();
     this.setCancelButtonEventListener();
     this.setLogoutButtonEventListener();
   }
 
-  createPrompt() {
+  setIframeElement() {
+    this.iframeElement = Iframe.create(this.createPromptElement());
+
+    document.querySelector(this.config.promptContainerSelector)
+      .appendChild(this.iframeElement);
+
+    this.iframeElement
+    .contentWindow
+    .document
+    .body
+    .appendChild(this.iframeElement.promptElement);
+
+    this.iframeElement
+      .contentWindow
+      .document
+      .body
+      .style
+      .setProperty(
+        'font-size',
+        window.getComputedStyle(document.body, null)
+        .getPropertyValue('font-size')
+      );
+  }
+
+  createPromptElement() {
     return PromptFactory.create(
       this.config.promptHeaderText,
       this.config.promptDialogText,
@@ -45,10 +67,31 @@ class IdleHands {
   }
 
   displayLogoutMessage() {
-    this.prompt.dialogElement.timeRemainingElement.style.display = 'none';
-    this.prompt.dialogElement.cancelButtonElement.disabled = true;
-    this.prompt.dialogElement.logoutButtonElement.disabled = true;
-    this.prompt.dialogElement.logoutMessageElement.style.display = 'block';
+    this.iframeElement
+      .promptElement
+      .dialogElement
+      .timeRemainingElement
+      .style
+      .display = 'none';
+
+    this.iframeElement
+      .promptElement
+      .dialogElement
+      .cancelButtonElement
+      .disabled = true;
+
+    this.iframeElement
+      .promptElement
+      .dialogElement
+      .logoutButtonElement
+      .disabled = true;
+
+    this.iframeElement
+      .promptElement
+      .dialogElement
+      .logoutMessageElement
+      .style
+      .display = 'block';
   }
 
   setEventListeners() {
@@ -64,14 +107,16 @@ class IdleHands {
   }
 
   setCancelButtonEventListener() {
-    this.prompt
+    this.iframeElement
+      .promptElement
       .dialogElement
       .cancelButtonElement
       .addEventListener('click', this.resetHandler);
   }
 
   setLogoutButtonEventListener() {
-    this.prompt
+    this.iframeElement
+      .promptElement
       .dialogElement
       .logoutButtonElement
       .addEventListener('click', function() {
@@ -100,7 +145,7 @@ class IdleHands {
     this.setEventListeners();
 
     this.log('Hiding prompt...');
-    this.prompt.hide();
+    this.iframeElement.hide();
 
     this.log('Stopping timer...');
     this.timer.stop();
@@ -132,7 +177,7 @@ class IdleHands {
     const MAXIMUM_IDLE_TIME = this.config.maximumIdleDuration;
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
     const PROMPT_DURATION = this.config.promptDuration;
-    const PROMPT_IS_DISPLAYED = this.prompt.isDisplayed;
+    const PROMPT_IS_DISPLAYED = this.iframeElement.promptElement.isDisplayed;
 
     this.log('Tick...');
 
@@ -144,7 +189,8 @@ class IdleHands {
     }
 
     this.log('Updating prompt...');
-    this.prompt
+    this.iframeElement
+      .promptElement
       .dialogElement
       .timeRemainingElement
       .updateTime(TIME_REMAINING / 1000);
@@ -154,7 +200,7 @@ class IdleHands {
       document.title = this.originalDocumentTitle;
 
       this.log('Hiding prompt...');
-      this.prompt.hide();
+      this.iframeElement.promptElement.hide();
     }
 
     if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
@@ -165,11 +211,15 @@ class IdleHands {
       this.unsetEventListeners();
 
       this.log('Displaying prompt...');
-      this.prompt.display();
+      this.iframeElement.display();
 
       if (this.config.shiftFocus) {
         this.log('Shifting focus to cancel button...');
-        this.prompt.dialogElement.cancelButtonElement.focus();
+        this.iframeElement
+          .promptElement
+          .dialogElement
+          .cancelButtonElement
+          .focus();
       }
     }
 

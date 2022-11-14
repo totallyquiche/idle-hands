@@ -7,7 +7,6 @@ class Prompt {
       'idle-hands-prompt',
       [dialogElement],
       {
-        'display': 'none',
         'position': 'fixed',
         'height': '100%',
         'width': '100%',
@@ -19,15 +18,6 @@ class Prompt {
     );
 
     ELEMENT.dialogElement = dialogElement;
-    ELEMENT.isDisplayed = false;
-    ELEMENT.display = function() {
-      ELEMENT.style.display = 'block';
-      ELEMENT.isDisplayed = true;
-    }
-    ELEMENT.hide = function() {
-      ELEMENT.style.display = 'none';
-      ELEMENT.isDisplayed = false;
-    }
 
     return ELEMENT;
   }

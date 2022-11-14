@@ -10,7 +10,6 @@ class Header {
         'display': 'block',
         'font-size': '1.15em',
         'font-weight': 'bold',
-        'font-family': 'sans-serif',
         'color': '#fff',
         'text-align': 'center',
         'background-color': '#1484c8',
