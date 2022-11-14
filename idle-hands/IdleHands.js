@@ -34,7 +34,7 @@ class IdleHands {
     this.storage.set('logoutUrl', this.config.logoutUrl);
 
     this.setIframeElement();
-    this.setEventListeners();
+    this.setDocumentEventListeners();
     this.setCancelButtonEventListener();
     this.setLogoutButtonEventListener();
   }
@@ -100,13 +100,13 @@ class IdleHands {
       .display = 'block';
   }
 
-  setEventListeners() {
+  setDocumentEventListeners() {
     this.config.events.forEach(function(event) {
       document.addEventListener(event, this.resetHandler);
     }.bind(this));
   }
 
-  unsetEventListeners() {
+  unsetDocumentEventListeners() {
     this.config.events.forEach(function(event) {
       document.removeEventListener(event, this.resetHandler);
     }.bind(this));
@@ -150,7 +150,7 @@ class IdleHands {
     document.title = this.originalDocumentTitle;
 
     this.log('Setting event listeners...');
-    this.setEventListeners();
+    this.setDocumentEventListeners();
 
     this.log('Hiding iframe...');
     this.iframe.hide();
@@ -217,7 +217,7 @@ class IdleHands {
       document.title = this.config.documentTitle;
 
       this.log('Unsetting event listeners...');
-      this.unsetEventListeners();
+      this.unsetDocumentEventListeners();
 
       this.log('Displaying prompt...');
       this.iframe.display();
