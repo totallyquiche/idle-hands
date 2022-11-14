@@ -20,6 +20,10 @@ class Dialog {
     ];
 
     const STYLES = {
+      'position': 'fixed',
+      'top': '50%',
+      'left': '50%',
+      'transform': 'translate(-50%, -50%)',
       'min-width': '350px',
       'padding': '4px',
       'border': '1px solid black',

@@ -55,7 +55,7 @@ class PromptFactory {
 
   display() {
     this.isDisplayed = true;
-    this.promptElement.style.display = 'flex';
+    this.promptElement.style.display = 'block';
   }
 
   hide() {

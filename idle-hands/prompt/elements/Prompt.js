@@ -8,9 +8,11 @@ class Prompt {
       [dialog],
       {
         'display': 'none',
-        'height': '100vh',
-        'justify-content': 'center',
-        'align-items': 'center',
+        'position': 'fixed',
+        'height': '100%',
+        'width': '100%',
+        'top': '0',
+        'left': '0',
         'background-image': 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNksAcAAEUAQRtOwGEAAAAASUVORK5CYII=")',
         'z-index': zIndex,
       }
