@@ -5,8 +5,9 @@ class Element {
     id = '',
     classNames = [],
     styles = {},
-    html = '',
-    children = []
+    text = '',
+    children = [],
+    allowHtml = false
   ) {
     const ELEMENT = document.createElement(tagName);
 
@@ -20,7 +21,11 @@ class Element {
       ELEMENT.style.setProperty(style, styles[style], 'important');
     }
 
-    ELEMENT.innerHTML = html;
+    if (allowHtml) {
+      ELEMENT.innerHTML = text;
+    } else {
+      ELEMENT.innerText = text;
+    }
 
     children.forEach(function(child) {
       ELEMENT.appendChild(child);

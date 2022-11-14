@@ -11,6 +11,7 @@ class ConfigManager {
     this.promptDuration = 30 * 1000; // 30 seconds;
     this.promptContainerSelector = 'body';
     this.promptZindex = 9999;
+    this.promptDialogTextAllowHtml = false;
     this.promptTimeRemainingTemplate = '%time seconds remaining';
     this.promptHeaderText = 'Session Expiration Warning';
     this.promptDialogText = 'Your session is about to expire due to inactivity.';

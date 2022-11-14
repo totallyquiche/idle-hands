@@ -31,6 +31,7 @@ class IdleHands {
       this.getConfig('promptTimeRemainingTemplate'),
       this.getConfig('promptHeaderText'),
       this.getConfig('promptDialogText'),
+      this.getConfig('promptDialogTextAllowHtml'),
       this.getConfig('promptCancelButtonText'),
       this.getConfig('promptLogoutButtonText'),
       this.getConfig('promptLogoutText')

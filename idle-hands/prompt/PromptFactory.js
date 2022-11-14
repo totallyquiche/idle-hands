@@ -16,13 +16,17 @@ class PromptFactory {
     timeRemainingTemplate,
     headerText,
     dialogText,
+    promptDialogTextAllowHtml,
     cancelButtonText,
     logoutButtonText,
     logoutText
   ) {
     this.isDisplayed = false;
     this.headerElement = Header.create(headerText);
-    this.dialogTextElement = DialogText.create(dialogText);
+    this.dialogTextElement = DialogText.create(
+      dialogText,
+      promptDialogTextAllowHtml
+    );
     this.timeElement = Time.create();
     this.timeRemainingElement = TimeRemaining.create(
       timeRemainingTemplate,
