@@ -23,7 +23,7 @@ class TimeRemaining {
       children = [Span.create(timeRemainingTemplate)];
     }
 
-    return Span.create(
+    const ELEMENT = Span.create(
       '',
       children,
       {
@@ -31,6 +31,13 @@ class TimeRemaining {
         'margin': '0 14px',
       }
     );
+
+    ELEMENT.timeElement = timeElement;
+    ELEMENT.updateTime = function(timeRemaining) {
+      ELEMENT.timeElement.innerText = timeRemaining;
+    };
+
+    return ELEMENT;
   }
 
 }

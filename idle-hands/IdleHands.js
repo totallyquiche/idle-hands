@@ -8,59 +8,74 @@ import PromptFactory from './prompt/PromptFactory.js';
 class IdleHands {
 
   constructor(config = {}) {
-    this.originalDocumentTitle = document.title;
     this.config = new ConfigManager(config);
-    this.logger = new Logger(this.getConfig('applicationId'));
-    this.prompt = this.getPrompt();
-    this.storage = new Storage(this.getConfig('applicationId'));
+
+    const APPLICATION_ID = this.config.applicationId;
+
+    this.originalDocumentTitle = document.title;
+    this.logger = new Logger(APPLICATION_ID);
+    this.prompt = this.createPrompt();
+    this.storage = new Storage(APPLICATION_ID);
     this.timer = this.createTimer();
-    this.heartbeat = new Heartbeat(this.getConfig('heartbeatUrl'));
+    this.heartbeat = new Heartbeat(this.config.heartbeatUrl);
     this.resetHandler = this.reset.bind(this);
     this.logoutHandler = this.logOut.bind(this);
-    this.storage.set('logoutUrl', this.getConfig('logoutUrl'));
+
+    this.storage.set('logoutUrl', this.config.logoutUrl);
+
+    document.querySelector(this.config.promptContainerSelector)
+      .appendChild(this.prompt);
 
     this.setEventListeners();
     this.setCancelButtonEventListener();
     this.setLogoutButtonEventListener();
   }
 
-  getPrompt() {
-    return new PromptFactory(
-      this.getConfig('promptContainerSelector'),
-      this.getConfig('promptZindex'),
-      this.getConfig('promptTimeRemainingTemplate'),
-      this.getConfig('promptHeaderText'),
-      this.getConfig('promptDialogText'),
-      this.getConfig('promptDialogTextAllowHtml'),
-      this.getConfig('promptCancelButtonText'),
-      this.getConfig('promptLogoutButtonText'),
-      this.getConfig('promptLogoutText')
+  createPrompt() {
+    return PromptFactory.create(
+      this.config.promptHeaderText,
+      this.config.promptDialogText,
+      this.config.promptDialogTextAllowHtml,
+      this.config.promptTimeRemainingTemplate,
+      this.config.promptLogoutText,
+      this.config.promptCancelButtonText,
+      this.config.promptLogoutButtonText,
+      this.config.promptZindex
     );
   }
 
+  displayLogoutMessage() {
+    this.prompt.dialogElement.timeRemainingElement.style.display = 'none';
+    this.prompt.dialogElement.cancelButtonElement.disabled = true;
+    this.prompt.dialogElement.logoutButtonElement.disabled = true;
+    this.prompt.dialogElement.logoutMessageElement.style.display = 'block';
+  }
+
   setEventListeners() {
-    this.getConfig('events').forEach(function(event) {
+    this.config.events.forEach(function(event) {
       document.addEventListener(event, this.resetHandler);
     }.bind(this));
   }
 
   unsetEventListeners() {
-    this.getConfig('events').forEach(function(event) {
+    this.config.events.forEach(function(event) {
       document.removeEventListener(event, this.resetHandler);
     }.bind(this));
   }
 
   setCancelButtonEventListener() {
     this.prompt
+      .dialogElement
       .cancelButtonElement
       .addEventListener('click', this.resetHandler);
   }
 
   setLogoutButtonEventListener() {
     this.prompt
+      .dialogElement
       .logoutButtonElement
       .addEventListener('click', function() {
-        this.storage.set('logoutUrl', this.getConfig('manualLogoutUrl'));
+        this.storage.set('logoutUrl', this.config.manualLogoutUrl);
         this.logoutHandler();
       }.bind(this));
   }
@@ -70,15 +85,11 @@ class IdleHands {
   }
 
   log(message) {
-    if (this.getConfig('debug')) this.logger.log(message);
-  }
-
-  getConfig(key) {
-    return this.config[key];
+    if (this.config.debug) this.logger.log(message);
   }
 
   getTimeRemaining() {
-    return this.getConfig('maximumIdleDuration') - this.timer.getIdleTime();
+    return this.config.maximumIdleDuration - this.timer.getIdleTime();
   }
 
   reset() {
@@ -100,7 +111,7 @@ class IdleHands {
 
   logOut() {
     this.log('Updating document title...');
-    document.title = this.getConfig('logoutDocumentTitle');
+    document.title = this.config.logoutDocumentTitle;
 
     this.log('Stopping timer...');
     this.timer.stop();
@@ -109,7 +120,7 @@ class IdleHands {
     this.timer.clearStartTime();
 
     this.log('Displaying logout message...');
-    this.prompt.displayLogoutMessage();
+    this.displayLogoutMessage();
 
     this.log('Redirecting to logout URL...');
     window.location.replace(this.storage.get('logoutUrl'));
@@ -118,11 +129,10 @@ class IdleHands {
   tick() {
     const TIMER = this.timer;
     const HEARTBEAT_INTERVAL = this.config['heartbeatInterval'];
-    const MAXIMUM_IDLE_TIME = this.getConfig('maximumIdleDuration');
+    const MAXIMUM_IDLE_TIME = this.config.maximumIdleDuration;
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
-    const PROMPT_DURATION = this.getConfig('promptDuration');
-    const PROMPT = this.prompt;
-    const PROMPT_IS_DISPLAYED = PROMPT.isDisplayed;
+    const PROMPT_DURATION = this.config.promptDuration;
+    const PROMPT_IS_DISPLAYED = this.prompt.isDisplayed;
 
     this.log('Tick...');
 
@@ -134,29 +144,32 @@ class IdleHands {
     }
 
     this.log('Updating prompt...');
-    PROMPT.updateTimeRemaining(TIME_REMAINING / 1000);
+    this.prompt
+      .dialogElement
+      .timeRemainingElement
+      .updateTime(TIME_REMAINING / 1000);
 
     if (TIME_REMAINING > PROMPT_DURATION && PROMPT_IS_DISPLAYED) {
       this.log('Updating document title...');
       document.title = this.originalDocumentTitle;
 
       this.log('Hiding prompt...');
-      PROMPT.hide();
+      this.prompt.hide();
     }
 
     if (TIME_REMAINING <= PROMPT_DURATION && !PROMPT_IS_DISPLAYED) {
       this.log('Updating document title...');
-      document.title = this.getConfig('documentTitle');
+      document.title = this.config.documentTitle;
 
       this.log('Unsetting event listeners...');
       this.unsetEventListeners();
 
       this.log('Displaying prompt...');
-      PROMPT.display();
+      this.prompt.display();
 
-      if (this.getConfig('shiftFocus')) {
+      if (this.config.shiftFocus) {
         this.log('Shifting focus to cancel button...');
-        PROMPT.cancelButtonElement.focus();
+        this.prompt.dialogElement.cancelButtonElement.focus();
       }
     }
 

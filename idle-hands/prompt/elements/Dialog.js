@@ -3,20 +3,20 @@ import Div from "../helpers/Div.js"
 class Dialog {
 
   static create(
-    header,
-    dialog,
-    timeRemaining,
-    logoutMessage,
-    cancelButton,
-    logoutButton
+    headerElement,
+    dialogElement,
+    timeRemainingElement,
+    logoutMessageElement,
+    cancelButtonElement,
+    logoutButtonElement
   ) {
     const CHILDREN = [
-      header,
-      dialog,
-      timeRemaining,
-      logoutMessage,
-      cancelButton,
-      logoutButton
+      headerElement,
+      dialogElement,
+      timeRemainingElement,
+      logoutMessageElement,
+      cancelButtonElement,
+      logoutButtonElement,
     ];
 
     const STYLES = {
@@ -32,7 +32,16 @@ class Dialog {
       'color': '#333',
     };
 
-    return Div.create('idle-hands-dialog', CHILDREN, STYLES);
+    const ELEMENT = Div.create('idle-hands-dialog', CHILDREN, STYLES);
+
+    ELEMENT.headerElement = headerElement;
+    ELEMENT.dialogElement = dialogElement;
+    ELEMENT.timeRemainingElement = timeRemainingElement;
+    ELEMENT.logoutMessageElement = logoutMessageElement;
+    ELEMENT.cancelButtonElement = cancelButtonElement;
+    ELEMENT.logoutButtonElement = logoutButtonElement;
+
+    return ELEMENT;
   }
 
 }

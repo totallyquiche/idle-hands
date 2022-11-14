@@ -2,10 +2,10 @@ import Div from "../helpers/Div.js";
 
 class Prompt {
 
-  static create(zIndex, dialog) {
-    return Div.create(
+  static create(dialogElement, zIndex) {
+    const ELEMENT = Div.create(
       'idle-hands-prompt',
-      [dialog],
+      [dialogElement],
       {
         'display': 'none',
         'position': 'fixed',
@@ -17,6 +17,19 @@ class Prompt {
         'z-index': zIndex,
       }
     );
+
+    ELEMENT.dialogElement = dialogElement;
+    ELEMENT.isDisplayed = false;
+    ELEMENT.display = function() {
+      ELEMENT.style.display = 'block';
+      ELEMENT.isDisplayed = true;
+    }
+    ELEMENT.hide = function() {
+      ELEMENT.style.display = 'none';
+      ELEMENT.isDisplayed = false;
+    }
+
+    return ELEMENT;
   }
 
 }

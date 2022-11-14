@@ -2,9 +2,9 @@ import Span from "../helpers/Span.js"
 
 class Header {
 
-  static create(headerText) {
+  static create(text) {
     return Span.create(
-      headerText,
+      text,
       [],
       {
         'display': 'block',
