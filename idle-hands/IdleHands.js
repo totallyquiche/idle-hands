@@ -17,6 +17,7 @@ class IdleHands {
     this.heartbeat = new Heartbeat(this.getConfig('heartbeatUrl'));
     this.resetHandler = this.reset.bind(this);
     this.logoutHandler = this.logOut.bind(this);
+    this.storage.set('logoutUrl', this.getConfig('logoutUrl'));
 
     this.setEventListeners();
     this.setCancelButtonEventListener();
@@ -57,7 +58,10 @@ class IdleHands {
   setLogoutButtonEventListener() {
     this.prompt
       .logoutButtonElement
-      .addEventListener('click', this.logoutHandler);
+      .addEventListener('click', function() {
+        this.storage.set('logoutUrl', this.getConfig('manualLogoutUrl'));
+        this.logoutHandler();
+      }.bind(this));
   }
 
   createTimer() {
@@ -107,7 +111,7 @@ class IdleHands {
     this.prompt.displayLogoutMessage();
 
     this.log('Redirecting to logout URL...');
-    window.location.replace(this.getConfig('logoutUrl'));
+    window.location.replace(this.storage.get('logoutUrl'));
   }
 
   tick() {

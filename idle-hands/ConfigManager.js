@@ -18,9 +18,7 @@ class ConfigManager {
     this.promptLogoutButtonText = 'Log Out Now';
     this.promptLogoutText = 'Logging out...';
     this.events =  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'];
-
-    // this.set('automaticLogOutUrl', window.location.href);
-    // this.set('manualLogOutUrl', window.location.href);
+    this.manualLogoutUrl = this.logoutUrl;
 
     if (!configValues['logoutUrl']) {
       throw new TypeError('logoutUrl must be defined');
