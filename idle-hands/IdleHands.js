@@ -153,6 +153,11 @@ class IdleHands {
 
       this.log('Displaying prompt...');
       PROMPT.display();
+
+      if (this.getConfig('shiftFocus')) {
+        this.log('Shifting focus to cancel button...');
+        PROMPT.cancelButtonElement.focus();
+      }
     }
 
     if (TIME_REMAINING <= 0) {

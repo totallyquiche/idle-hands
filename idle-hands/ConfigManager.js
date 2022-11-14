@@ -23,6 +23,7 @@ class ConfigManager {
     this.promptLogoutText = 'Logging out...';
     this.promptTimeRemainingTemplate = '%time seconds remaining';
     this.promptZindex = 9999;
+    this.shiftFocus = true;
 
     for (const key in configValues) {
       this[key] = configValues[key];

@@ -53,3 +53,4 @@ across one or more browser windows or tabs.
 | promptLogoutText            | `'Logging out...'`                                               | The text to display in the body of the prompt dialog box while logging out                                                        |
 | promptTimeRemainingTemplate | `'%time seconds remaining'`                                      | The text to display below the `promptDialogText` text (`%time` is automatically replaced with the remaining seconds until logout) |
 | promptZindex                | `9999`                                                           | The `z-index` of the prompt element                                                                                               |
+| shiftFocus                  | `true`                                                           | Controls whether focus should shift to the promopt dialog cancel button when the prompt is displayed                              |
