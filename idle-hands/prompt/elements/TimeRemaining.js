@@ -5,18 +5,27 @@ class TimeRemaining {
   static create(timeRemainingTemplate, timeElement) {
     const TEMPLATE_PARTS = timeRemainingTemplate.split('%time');
 
-    if (TEMPLATE_PARTS.length !== 2) {
+    if (TEMPLATE_PARTS.length > 2) {
       throw new SyntaxError(
         'timeRemainingTemplate must contain a single "%time" placeholder'
       );
     }
 
-    const PREFIX_ELEMENT = Span.create(TEMPLATE_PARTS[0]);
-    const SUFFIX_ELEMENT = Span.create(TEMPLATE_PARTS[1]);
+    let children;
+
+    if (TEMPLATE_PARTS.length === 2) {
+      children = [
+        Span.create(TEMPLATE_PARTS[0]),
+        timeElement,
+        Span.create(TEMPLATE_PARTS[1]),
+      ];
+    } else {
+      children = [Span.create(timeRemainingTemplate)];
+    }
 
     return Span.create(
       '',
-      [PREFIX_ELEMENT, timeElement, SUFFIX_ELEMENT],
+      children,
       {
         'display': 'block',
         'margin': '0 14px',
