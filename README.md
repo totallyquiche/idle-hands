@@ -1,10 +1,9 @@
 # Idle Hands
 
-Manage user inactivity across all browser windows with automatic redirect and
-dialog prompt.
+Use Idle Hands to automatically log your users out after a period of inactivity
+across one or more browser windows or tabs.
 
-This is a zero-dependency, pure JavaScript rewrite of the
-[jQuery Idle Hands plugin](https://github.com/totallyquiche/jquery-idle-hands).
+![Idle Hands dialog](preview.png)
 
 ## Basic Usage
 
