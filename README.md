@@ -9,9 +9,9 @@ across one or more browser windows or tabs.
 
 ```html
 <script type="module">
-    import idleHands from './idle-hands.js';
+    import IdleHands from './idle-hands/IdleHands.js';
 
-    idleHands.start({logoutUrl: 'https://abc.xyz/logout/'});
+    new IdleHands({logoutUrl: 'https://abc.xyz/logout/'});
 </script>
 ```
 
@@ -19,9 +19,9 @@ across one or more browser windows or tabs.
 
 ```html
 <script type="module">
-    import idleHands from './idle-hands.js';
+    import IdleHands from './idle-hands/IdleHands.js';
 
-    idleHands.start({
+    new IdleHands({
         logoutUrl: 'https://abc.xyz/logout/',
         maximumIdleDuration: 60 * 1000 * 15, // 15 minutes
         debug: true,
