@@ -1,4 +1,4 @@
-import Div from "../helpers/Div.js";
+import Div from "..//helpers/Div.js";
 
 class ButtonContainer extends Div {
 

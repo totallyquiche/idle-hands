@@ -1,4 +1,4 @@
-import Button from "../helpers/Button.js";
+import Button from "..//helpers/Button.js";
 
 class LogoutButton extends Button {
 

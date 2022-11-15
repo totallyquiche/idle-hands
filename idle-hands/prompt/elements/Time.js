@@ -1,4 +1,4 @@
-import Span from "../helpers/Span.js"
+import Span from "..//helpers/Span.js"
 
 class Time extends Span {
 

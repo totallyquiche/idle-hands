@@ -3,8 +3,8 @@ import Logger from './Logger.js';
 import Storage from './Storage.js';
 import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
-import PromptFactory from './PromptFactory.js';
-import Container from './elements/Container.js';
+import PromptFactory from './prompt/PromptFactory.js';
+import Container from './prompt/elements/Container.js';
 
 class IdleHands {
 
