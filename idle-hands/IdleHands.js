@@ -19,21 +19,21 @@ class IdleHands {
   logoutHandler;
   container;
   parent;
-  activeElement;
+  originalActiveElement;
 
   constructor(config = {}) {
-    this.activeElement = (document.activeElement || document.body);
     this.config = new ConfigManager(config);
 
     const APPLICATION_ID = this.config.applicationId;
 
-    this.originalDocumentTitle = document.title;
     this.logger = new Logger(APPLICATION_ID);
     this.storage = new Storage(APPLICATION_ID);
     this.timer = this.createTimer();
     this.heartbeat = new Heartbeat(this.config.heartbeatUrl);
     this.resetHandler = this.reset.bind(this);
     this.logoutHandler = this.logOut.bind(this);
+    this.originalDocumentTitle = document.title;
+    this.originalActiveElement = (document.activeElement || document.body);
     this.parent = document.querySelector(this.config.promptContainerSelector);
 
     this.storage.set('logoutUrl', this.config.logoutUrl);
@@ -113,17 +113,19 @@ class IdleHands {
     this.container.element.blur();
 
     this.log('Returning focus to original active element...');
-    this.activeElement.focus();
+    this.originalActiveElement.focus();
   }
 
   setDocumentEventListeners() {
     this.config.events.forEach(function(event) {
+      this.log(`Setting ${event} event listener on document`);
       document.addEventListener(event, this.resetHandler);
     }.bind(this));
   }
 
   unsetDocumentEventListeners() {
     this.config.events.forEach(function(event) {
+      this.log(`Removing ${event} event listener from document`);
       document.removeEventListener(event, this.resetHandler);
     }.bind(this));
   }
@@ -163,7 +165,6 @@ class IdleHands {
     this.log('Reverting document title...');
     document.title = this.originalDocumentTitle;
 
-    this.log('Setting event listeners...');
     this.setDocumentEventListeners();
 
     this.hideContainer();
