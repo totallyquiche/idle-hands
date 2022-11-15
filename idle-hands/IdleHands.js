@@ -83,6 +83,7 @@ class IdleHands {
     this.iframe
       .prompt
       .dialog
+      .buttonContainer
       .cancelButton
       .element
       .disabled = true;
@@ -90,6 +91,7 @@ class IdleHands {
     this.iframe
       .prompt
       .dialog
+      .buttonContainer
       .logoutButton
       .element
       .disabled = true;
@@ -119,6 +121,7 @@ class IdleHands {
     this.iframe
       .prompt
       .dialog
+      .buttonContainer
       .cancelButton
       .element
       .addEventListener('click', this.resetHandler);
@@ -128,6 +131,7 @@ class IdleHands {
     this.iframe
       .prompt
       .dialog
+      .buttonContainer
       .logoutButton
       .element
       .addEventListener('click', function() {
@@ -230,6 +234,7 @@ class IdleHands {
         this.iframe
           .prompt
           .dialog
+          .buttonContainer
           .cancelButton
           .element
           .focus();

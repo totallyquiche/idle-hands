@@ -6,24 +6,21 @@ class Dialog extends Div {
   dialog;
   timeRemaining;
   logoutMessage;
-  cancelButton;
-  logoutButton;
+  buttonContainer;
 
   constructor(
     header,
     dialog,
     timeRemaining,
     logoutMessage,
-    cancelButton,
-    logoutButton
+    buttonContainer
   ) {
     const CHILDREN = [
       header.element,
       dialog.element,
       timeRemaining.element,
       logoutMessage.element,
-      cancelButton.element,
-      logoutButton.element,
+      buttonContainer.element,
     ];
 
     const STYLES = {
@@ -45,8 +42,7 @@ class Dialog extends Div {
     this.dialog = dialog;
     this.timeRemaining = timeRemaining;
     this.logoutMessage = logoutMessage;
-    this.cancelButton = cancelButton;
-    this.logoutButton = logoutButton;
+    this.buttonContainer = buttonContainer;
   }
 
 }

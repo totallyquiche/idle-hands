@@ -10,10 +10,6 @@ class Button extends Element {
       id,
       [],
       {
-        'width': '40%',
-        'padding': '2% 0',
-        'margin': '14px 0',
-        'margin-left': '6%'
       },
       text
     );

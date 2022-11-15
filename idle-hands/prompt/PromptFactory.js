@@ -7,6 +7,7 @@ import CancelButton from "./elements/CancelButton.js";
 import LogoutButton from "./elements/LogoutButton.js";
 import Dialog from "./elements/Dialog.js";
 import Prompt from "./elements/Prompt.js";
+import ButtonContainer from "./elements/ButtonContainer.js";
 
 class PromptFactory {
 
@@ -22,13 +23,15 @@ class PromptFactory {
     fontSize
   ) {
 
+    const CANCEL_BUTTON = new CancelButton(cancelButtonText);
+    const LOGOUT_BUTTON = new LogoutButton(logoutButtonText);
+
     const DIALOG = new Dialog(
       new Header(headerText),
       new DialogText(dialogText, dialogTextAllowHtml),
       new TimeRemaining(timeRemainingTemplate, new Time()),
       new LogoutMessage(logoutText),
-      new CancelButton(cancelButtonText),
-      new LogoutButton(logoutButtonText)
+      new ButtonContainer(CANCEL_BUTTON, LOGOUT_BUTTON)
   );
 
     return new Prompt(DIALOG, zIndex, fontSize);
