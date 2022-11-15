@@ -1,7 +1,4 @@
 import Header from "./elements/Header.js";
-import Time from "./elements/Time.js"
-import DialogText from "./elements/DialogText.js";
-import LogoutMessage from "./elements/LogoutMessage.js";
 import CancelButton from "./elements/CancelButton.js";
 import LogoutButton from "./elements/LogoutButton.js";
 import Dialog from "./elements/Dialog.js";
@@ -14,7 +11,6 @@ class PromptFactory {
   static create(
     headerText,
     dialogText,
-    logoutText,
     cancelButtonText,
     logoutButtonText,
     zIndex,
@@ -23,12 +19,10 @@ class PromptFactory {
 
     const CANCEL_BUTTON = new CancelButton(cancelButtonText);
     const LOGOUT_BUTTON = new LogoutButton(logoutButtonText);
-    const DIALOG_TEXT = new DialogText(dialogText, new Time());
 
     const DIALOG = new Dialog(
       new Header(headerText),
-      new TextContainer(DIALOG_TEXT),
-      new LogoutMessage(logoutText),
+      new TextContainer(dialogText),
       new ButtonContainer(CANCEL_BUTTON, LOGOUT_BUTTON)
   );
 

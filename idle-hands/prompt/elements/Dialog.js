@@ -4,19 +4,16 @@ class Dialog extends Div {
 
   header;
   textContainer;
-  logoutMessage;
   buttonContainer;
 
   constructor(
     header,
     textContainer,
-    logoutMessage,
     buttonContainer
   ) {
     const CHILDREN = [
       header.element,
       textContainer.element,
-      logoutMessage.element,
       buttonContainer.element,
     ];
 
@@ -37,7 +34,6 @@ class Dialog extends Div {
 
     this.header = header;
     this.textContainer = textContainer;
-    this.logoutMessage = logoutMessage;
     this.buttonContainer = buttonContainer;
   }
 

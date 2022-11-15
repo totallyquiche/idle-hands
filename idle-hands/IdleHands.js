@@ -5,6 +5,7 @@ import Timer from './Timer.js';
 import Heartbeat from './Heartbeat.js';
 import PromptFactory from './prompt/PromptFactory.js';
 import Container from './prompt/elements/Container.js';
+import DialogText from './prompt/elements/DialogText.js';
 
 class IdleHands {
 
@@ -59,8 +60,7 @@ class IdleHands {
   createPromptElement() {
     return PromptFactory.create(
       this.config.promptHeaderText,
-      this.config.promptDialogText,
-      this.config.promptLogoutText,
+      this.createDialogText(),
       this.config.promptCancelButtonText,
       this.config.promptLogoutButtonText,
       this.config.promptZindex,
@@ -69,15 +69,21 @@ class IdleHands {
     );
   }
 
+  createDialogText() {
+    return new DialogText(
+      this.config.promptDialogText,
+      this.timer.getTimeRemaining(this.config.maximumIdleDuration) / 1000,
+      this.config.promptDialogTextAllowHtml
+    );
+  }
+
   displayLogoutMessage() {
     this.container
       .prompt
       .dialog
-      .textContainer
-      .dialogText
+      .header
       .element
-      .style
-      .display = 'none';
+      .innerText = this.config.promptLogoutText;
 
     this.container
       .prompt
@@ -94,14 +100,6 @@ class IdleHands {
       .logoutButton
       .element
       .disabled = true;
-
-    this.container
-      .prompt
-      .dialog
-      .logoutMessage
-      .element
-      .style
-      .display = 'block';
   }
 
   setDocumentEventListeners() {
@@ -199,13 +197,18 @@ class IdleHands {
     }
 
     this.log('Updating prompt...');
+
+    const DIALOG_TEXT_HTML = this.createDialogText(TIME_REMAINING / 1000)
+      .element
+      .innerHTML;
+
     this.container
       .prompt
       .dialog
       .textContainer
       .dialogText
-      .time
-      .update(TIME_REMAINING / 1000);
+      .element
+      .innerHTML = DIALOG_TEXT_HTML;
 
     if (TIME_REMAINING > PROMPT_DURATION && PROMPT_IS_DISPLAYED) {
       this.log('Updating document title...');

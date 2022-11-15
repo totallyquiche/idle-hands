@@ -3,8 +3,9 @@ import Span from "../helpers/Span.js";
 class DialogText extends Span {
 
   time;
+  renderedText;
 
-  constructor(dialogText, time) {
+  constructor(dialogText, time, allowHtml) {
     const TEMPLATE_PARTS = dialogText.split('%time');
 
     if (TEMPLATE_PARTS.length > 2) {
@@ -13,24 +14,23 @@ class DialogText extends Span {
       );
     }
 
-    let children;
+    let renderedText;
 
     if (TEMPLATE_PARTS.length === 2) {
-      children = [
-        new Span(TEMPLATE_PARTS[0]).element,
-        time.element,
-        new Span(TEMPLATE_PARTS[1]).element,
-      ];
+      renderedText = TEMPLATE_PARTS[0] + time + TEMPLATE_PARTS[1];
     } else {
-      children = [new Span(dialogText).element];
+      renderedText = dialogText;
     }
 
     super(
-      '',
-      children,
+      renderedText,
+      [],
+      {},
+      allowHtml
     );
 
     this.time = time;
+    this.renderedText = renderedText;
   }
 
 }
