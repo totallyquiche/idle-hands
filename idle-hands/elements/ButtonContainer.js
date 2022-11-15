@@ -12,7 +12,6 @@ class ButtonContainer extends Div {
       {
         'display': 'flex',
         'justify-content': 'space-evenly',
-        'margin': '1em 0',
       }
     );
 

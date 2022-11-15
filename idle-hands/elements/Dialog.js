@@ -3,22 +3,19 @@ import Div from "../helpers/Div.js"
 class Dialog extends Div {
 
   header;
-  dialog;
-  timeRemaining;
+  textContainer;
   logoutMessage;
   buttonContainer;
 
   constructor(
     header,
-    dialog,
-    timeRemaining,
+    textContainer,
     logoutMessage,
     buttonContainer
   ) {
     const CHILDREN = [
       header.element,
-      dialog.element,
-      timeRemaining.element,
+      textContainer.element,
       logoutMessage.element,
       buttonContainer.element,
     ];
@@ -29,18 +26,17 @@ class Dialog extends Div {
       'left': '50%',
       'transform': 'translate(-50%, -50%)',
       'min-width': '350px',
-      'padding': '4px',
+      'padding-bottom': '8px',
       'border': '1px solid black',
-      'line-height': '1.5',
+      'border-radius': '4px',
       'background-color': 'white',
-      'color': '#333',
+      'color': '#152b22',
     };
 
     super('idle-hands-dialog', CHILDREN, STYLES);
 
     this.header = header;
-    this.dialog = dialog;
-    this.timeRemaining = timeRemaining;
+    this.textContainer = textContainer;
     this.logoutMessage = logoutMessage;
     this.buttonContainer = buttonContainer;
   }

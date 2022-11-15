@@ -2,10 +2,7 @@ import Element from "./Element.js";
 
 class Iframe extends Element {
 
-  prompt;
-  isDisplayed;
-
-  constructor(title, prompt) {
+  constructor() {
     super();
 
     this.element = this.create(
@@ -22,22 +19,9 @@ class Iframe extends Element {
         'border': 'none',
       }
     );
-
-    this.element.title = title;
-
-    this.prompt = prompt;
-    this.isDisplayed = false;
   }
 
-  display() {
-    this.element.style.display = 'block';
-    this.isDisplayed = 'true';
-  }
 
-  hide() {
-    this.element.style.display = 'none';
-    this.isDisplayed = false;
-  }
 
 }
 

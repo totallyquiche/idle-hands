@@ -1,15 +1,15 @@
 import Span from "../helpers/Span.js";
 
-class TimeRemaining extends Span {
+class DialogText extends Span {
 
   time;
 
-  constructor(timeRemainingTemplate, time) {
-    const TEMPLATE_PARTS = timeRemainingTemplate.split('%time');
+  constructor(dialogText, time) {
+    const TEMPLATE_PARTS = dialogText.split('%time');
 
     if (TEMPLATE_PARTS.length > 2) {
       throw new SyntaxError(
-        'timeRemainingTemplate must contain a single "%time" placeholder'
+        'dialogText must contain no more than one "%time" placeholder'
       );
     }
 
@@ -22,16 +22,12 @@ class TimeRemaining extends Span {
         new Span(TEMPLATE_PARTS[1]).element,
       ];
     } else {
-      children = [new Span(timeRemainingTemplate).element];
+      children = [new Span(dialogText).element];
     }
 
     super(
       '',
       children,
-      {
-        'display': 'block',
-        'margin': '0 14px',
-      }
     );
 
     this.time = time;
@@ -39,4 +35,4 @@ class TimeRemaining extends Span {
 
 }
 
-export default TimeRemaining;
+export default DialogText;

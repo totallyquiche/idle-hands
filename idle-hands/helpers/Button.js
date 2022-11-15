@@ -9,8 +9,7 @@ class Button extends Element {
       'button',
       id,
       [],
-      {
-      },
+      {},
       text
     );
   }
