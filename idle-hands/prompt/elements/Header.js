@@ -15,6 +15,7 @@ class Header extends Span {
         'background-color': '#1d4289',
         'border-radius': '4px',
         'padding': '4px',
+        'font-family': 'sans-serif',
       }
     );
   }
