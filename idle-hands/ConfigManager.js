@@ -11,6 +11,7 @@ class ConfigManager {
     this.events =  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'];
     this.heartbeatInterval = 60 * 1000; // 1 minute;
     this.heartbeatUrl = window.location.href;
+    this.iframeTitle = 'Session Expiration Warning Prompt';
     this.logoutDocumentTitle = 'Logging out...';
     this.maximumIdleDuration = 60 * 1000 * 60; // 1 hoor;
     this.promptCancelButtonText = 'Stay Logged In';

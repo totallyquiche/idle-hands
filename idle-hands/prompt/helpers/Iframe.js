@@ -5,7 +5,7 @@ class Iframe extends Element {
   prompt;
   isDisplayed;
 
-  constructor(prompt) {
+  constructor(title, prompt) {
     super();
 
     this.element = this.create(
@@ -22,6 +22,8 @@ class Iframe extends Element {
         'border': 'none',
       }
     );
+
+    this.element.title = title;
 
     this.prompt = prompt;
     this.isDisplayed = false;

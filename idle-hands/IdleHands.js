@@ -40,7 +40,10 @@ class IdleHands {
   }
 
   setIframeElement() {
-    this.iframe = new Iframe(this.createPromptElement());
+    this.iframe = new Iframe(
+      this.config.iframeTitle,
+      this.createPromptElement()
+    );
 
     document.querySelector(this.config.promptContainerSelector)
       .appendChild(this.iframe.element);
