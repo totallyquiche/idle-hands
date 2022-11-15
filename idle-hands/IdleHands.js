@@ -186,6 +186,9 @@ class IdleHands {
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
     const PROMPT_DURATION = this.config.promptDuration;
     const PROMPT_IS_DISPLAYED = this.container.isDisplayed;
+    const DIALOG_TEXT_HTML = this.createDialogText(TIME_REMAINING / 1000)
+      .element
+      .innerHTML;
 
     this.log('Tick...');
 
@@ -197,10 +200,6 @@ class IdleHands {
     }
 
     this.log('Updating prompt...');
-
-    const DIALOG_TEXT_HTML = this.createDialogText(TIME_REMAINING / 1000)
-      .element
-      .innerHTML;
 
     this.container
       .prompt
