@@ -4,6 +4,7 @@ Use Idle Hands to automatically log your users out after a period of inactivity
 across one or more browser windows or tabs.
 
 ![Idle Hands dialog](preview.png)
+![Idle Hands logging out dialog](logging-out-preview.png)
 
 ## Basic Usage
 
