@@ -22,13 +22,11 @@ class Dialog extends Div {
       'top': '50%',
       'left': '50%',
       'transform': 'translate(-50%, -50%)',
-      'min-width': '350px',
+      'min-width': '400px',
       'padding-bottom': '8px',
       'border': '1px solid black',
-      'border-radius': '4px',
       'background-color': 'white',
       'color': '#152b22',
-      'overflow': 'hidden',
     };
 
     super('idle-hands-dialog', CHILDREN, STYLES);
