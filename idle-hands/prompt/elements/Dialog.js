@@ -28,6 +28,7 @@ class Dialog extends Div {
       'border-radius': '4px',
       'background-color': 'white',
       'color': '#152b22',
+      'overflow': 'hidden',
     };
 
     super('idle-hands-dialog', CHILDREN, STYLES);
