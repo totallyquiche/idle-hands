@@ -1,4 +1,4 @@
-import Span from "..//helpers/Span.js";
+import Span from "../helpers/Span.js";
 
 class DialogText extends Span {
 
