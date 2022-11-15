@@ -24,7 +24,6 @@ class Dialog extends Div {
       'transform': 'translate(-50%, -50%)',
       'min-width': '400px',
       'padding-bottom': '8px',
-      'border': '1px solid black',
       'background-color': 'white',
       'color': '#152b22',
     };
