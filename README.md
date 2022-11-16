@@ -9,9 +9,8 @@ across one or more browser windows or tabs.
 ## Basic Usage
 
 ```html
-<script type="module">
-    import IdleHands from './idle-hands/IdleHands.js';
-
+<script src="./dist/bundle.min.js"></script>
+<script>
     new IdleHands({logoutUrl: 'https://abc.xyz/logout/'});
 </script>
 ```
@@ -19,9 +18,8 @@ across one or more browser windows or tabs.
 ### Advanced Usage
 
 ```html
-<script type="module">
-    import IdleHands from './idle-hands/IdleHands.js';
-
+<script src="./dist/bundle.min.js"></script>
+<script>
     new IdleHands({
         logoutUrl: 'https://abc.xyz/logout/',
         maximumIdleDuration: 60 * 1000 * 15, // 15 minutes
