@@ -7,7 +7,6 @@ class Iframe extends Element {
 
     this.element = this.create(
       'iframe',
-      '',
       [],
       {
         'display': 'none',

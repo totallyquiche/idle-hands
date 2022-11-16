@@ -1,6 +1,5 @@
+import Button from "./helpers/Button.js";
 import Header from "./elements/Header.js";
-import CancelButton from "./elements/CancelButton.js";
-import LogoutButton from "./elements/LogoutButton.js";
 import Dialog from "./elements/Dialog.js";
 import Prompt from "./elements/Prompt.js";
 import ButtonContainer from "./elements/ButtonContainer.js";
@@ -13,12 +12,11 @@ class PromptFactory {
     dialogText,
     cancelButtonText,
     logoutButtonText,
-    zIndex,
-    fontSize
+    zIndex
   ) {
 
-    const CANCEL_BUTTON = new CancelButton(cancelButtonText);
-    const LOGOUT_BUTTON = new LogoutButton(logoutButtonText);
+    const CANCEL_BUTTON = new Button(cancelButtonText);
+    const LOGOUT_BUTTON = new Button(logoutButtonText);
 
     const DIALOG = new Dialog(
       new Header(headerText),
@@ -26,7 +24,7 @@ class PromptFactory {
       new ButtonContainer(CANCEL_BUTTON, LOGOUT_BUTTON)
   );
 
-    return new Prompt(DIALOG, zIndex, fontSize);
+    return new Prompt(DIALOG, zIndex);
   }
 
 }

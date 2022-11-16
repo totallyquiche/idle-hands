@@ -7,7 +7,6 @@ class ButtonContainer extends Div {
 
   constructor(cancelButton, logoutButton) {
     super(
-      '',
       [cancelButton.element, logoutButton.element],
       {
         'display': 'flex',

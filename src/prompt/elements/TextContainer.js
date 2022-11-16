@@ -6,7 +6,6 @@ class TextContainer extends Div {
 
   constructor(dialogText) {
     super(
-      '',
       [dialogText.element],
       {
         'margin': '1em 0.5em',

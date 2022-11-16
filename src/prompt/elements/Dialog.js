@@ -28,7 +28,7 @@ class Dialog extends Div {
       'color': '#152b22',
     };
 
-    super('idle-hands-dialog', CHILDREN, STYLES);
+    super(CHILDREN, STYLES);
 
     this.header = header;
     this.textContainer = textContainer;

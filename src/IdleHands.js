@@ -58,6 +58,15 @@ class IdleHands {
       .document
       .body
       .appendChild(this.container.prompt.element);
+
+    this.container
+      .element
+      .contentWindow
+      .document
+      .body
+      .style
+      .fontSize = window.getComputedStyle(document.body, null)
+        .getPropertyValue('font-size');
   }
 
   createPromptElement() {
@@ -66,9 +75,7 @@ class IdleHands {
       this.createDialogText(),
       this.config.cancelButtonText,
       this.config.logoutButtonText,
-      this.config.zIndex,
-      window.getComputedStyle(document.body, null)
-        .getPropertyValue('font-size')
+      this.config.zIndex
     );
   }
 

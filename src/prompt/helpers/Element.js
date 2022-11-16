@@ -4,7 +4,6 @@ class Element {
 
   create(
     tagName,
-    id = '',
     classNames = [],
     styles = {},
     text = '',
@@ -12,8 +11,6 @@ class Element {
     allowHtml = false
   ) {
     const ELEMENT = document.createElement(tagName);
-
-    ELEMENT.id = id;
 
     classNames.forEach(function(className) {
       ELEMENT.classList.add(className);

@@ -2,12 +2,11 @@ import Element from "./Element.js";
 
 class Div extends Element {
 
-  constructor(id, children, styles = {}) {
+  constructor(children, styles = {}) {
     super();
 
     this.element = this.create(
       'div',
-      id,
       [],
       styles,
       '',

@@ -2,12 +2,11 @@ import Element from "./Element.js";
 
 class Button extends Element {
 
-  constructor(id, text) {
+  constructor(text) {
     super()
 
     this.element = this.create(
       'button',
-      id,
       [],
       {},
       text

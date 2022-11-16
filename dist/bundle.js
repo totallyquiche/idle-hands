@@ -144,7 +144,6 @@
 
     create(
       tagName,
-      id = '',
       classNames = [],
       styles = {},
       text = '',
@@ -152,8 +151,6 @@
       allowHtml = false
     ) {
       const ELEMENT = document.createElement(tagName);
-
-      ELEMENT.id = id;
 
       classNames.forEach(function(className) {
         ELEMENT.classList.add(className);
@@ -178,6 +175,21 @@
 
   }
 
+  class Button extends Element {
+
+    constructor(text) {
+      super();
+
+      this.element = this.create(
+        'button',
+        [],
+        {},
+        text
+      );
+    }
+
+  }
+
   class Span extends Element {
 
     constructor(text = '', children = [], styles = {}, allowHtml = false) {
@@ -185,7 +197,6 @@
 
       this.element = this.create(
         'span',
-        '',
         [],
         styles,
         text,
@@ -217,46 +228,13 @@
 
   }
 
-  class Button extends Element {
-
-    constructor(id, text) {
-      super();
-
-      this.element = this.create(
-        'button',
-        id,
-        [],
-        {},
-        text
-      );
-    }
-
-  }
-
-  class CancelButton extends Button {
-
-    constructor(text) {
-      super('idle-hands-prompt-cancel-button', text);
-    }
-
-  }
-
-  class LogoutButton extends Button {
-
-    constructor(text) {
-      super('idle-hands-prompt-logout-button', text);
-    }
-
-  }
-
   class Div extends Element {
 
-    constructor(id, children, styles = {}) {
+    constructor(children, styles = {}) {
       super();
 
       this.element = this.create(
         'div',
-        id,
         [],
         styles,
         '',
@@ -294,7 +272,7 @@
         'color': '#152b22',
       };
 
-      super('idle-hands-dialog', CHILDREN, STYLES);
+      super(CHILDREN, STYLES);
 
       this.header = header;
       this.textContainer = textContainer;
@@ -307,9 +285,8 @@
 
     dialog;
 
-    constructor(dialog, zIndex, fontSize) {
+    constructor(dialog, zIndex) {
       super(
-        'idle-hands-prompt',
         [dialog.element],
         {
           'position': 'fixed',
@@ -319,7 +296,6 @@
           'left': '0',
           'background-image': 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNksAcAAEUAQRtOwGEAAAAASUVORK5CYII=")',
           'z-index': zIndex,
-          'font-size': fontSize,
         }
       );
 
@@ -335,7 +311,6 @@
 
     constructor(cancelButton, logoutButton) {
       super(
-        '',
         [cancelButton.element, logoutButton.element],
         {
           'display': 'flex',
@@ -355,7 +330,6 @@
 
     constructor(dialogText) {
       super(
-        '',
         [dialogText.element],
         {
           'margin': '1em 0.5em',
@@ -375,12 +349,11 @@
       dialogText,
       cancelButtonText,
       logoutButtonText,
-      zIndex,
-      fontSize
+      zIndex
     ) {
 
-      const CANCEL_BUTTON = new CancelButton(cancelButtonText);
-      const LOGOUT_BUTTON = new LogoutButton(logoutButtonText);
+      const CANCEL_BUTTON = new Button(cancelButtonText);
+      const LOGOUT_BUTTON = new Button(logoutButtonText);
 
       const DIALOG = new Dialog(
         new Header(headerText),
@@ -388,7 +361,7 @@
         new ButtonContainer(CANCEL_BUTTON, LOGOUT_BUTTON)
     );
 
-      return new Prompt(DIALOG, zIndex, fontSize);
+      return new Prompt(DIALOG, zIndex);
     }
 
   }
@@ -400,7 +373,6 @@
 
       this.element = this.create(
         'iframe',
-        '',
         [],
         {
           'display': 'none',
@@ -530,6 +502,15 @@
         .document
         .body
         .appendChild(this.container.prompt.element);
+
+      this.container
+        .element
+        .contentWindow
+        .document
+        .body
+        .style
+        .fontSize = window.getComputedStyle(document.body, null)
+          .getPropertyValue('font-size');
     }
 
     createPromptElement() {
@@ -538,9 +519,7 @@
         this.createDialogText(),
         this.config.cancelButtonText,
         this.config.logoutButtonText,
-        this.config.zIndex,
-        window.getComputedStyle(document.body, null)
-          .getPropertyValue('font-size')
+        this.config.zIndex
       );
     }
 

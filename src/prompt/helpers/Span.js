@@ -7,7 +7,6 @@ class Span extends Element {
 
     this.element = this.create(
       'span',
-      '',
       [],
       styles,
       text,
