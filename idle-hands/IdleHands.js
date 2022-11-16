@@ -34,7 +34,7 @@ class IdleHands {
     this.logoutHandler = this.logOut.bind(this);
     this.originalDocumentTitle = document.title;
     this.originalActiveElement = (document.activeElement || document.body);
-    this.parent = document.querySelector(this.config.promptContainerSelector);
+    this.parent = document.querySelector(this.config.containerSelector);
 
     this.storage.set('logoutUrl', this.config.logoutUrl);
 
@@ -62,11 +62,11 @@ class IdleHands {
 
   createPromptElement() {
     return PromptFactory.create(
-      this.config.promptHeaderText,
+      this.config.headerText,
       this.createDialogText(),
-      this.config.promptCancelButtonText,
-      this.config.promptLogoutButtonText,
-      this.config.promptZindex,
+      this.config.cancelButtonText,
+      this.config.logoutButtonText,
+      this.config.zIndex,
       window.getComputedStyle(document.body, null)
         .getPropertyValue('font-size')
     );
@@ -74,9 +74,9 @@ class IdleHands {
 
   createDialogText() {
     return new DialogText(
-      this.config.promptDialogText,
+      this.config.dialogText,
       this.timer.getTimeRemaining(this.config.maximumIdleDuration) / 1000,
-      this.config.promptDialogTextAllowHtml
+      this.config.dialogTextAllowHtml
     );
   }
 
@@ -86,7 +86,7 @@ class IdleHands {
       .dialog
       .header
       .element
-      .innerText = this.config.promptLogoutText;
+      .innerText = this.config.logoutText;
 
     this.container
       .prompt
@@ -198,7 +198,7 @@ class IdleHands {
     const HEARTBEAT_INTERVAL = this.config['heartbeatInterval'];
     const MAXIMUM_IDLE_TIME = this.config.maximumIdleDuration;
     const TIME_REMAINING = TIMER.getTimeRemaining(MAXIMUM_IDLE_TIME);
-    const PROMPT_DURATION = this.config.promptDuration;
+    const PROMPT_DURATION = this.config.duration;
     const PROMPT_IS_DISPLAYED = this.container.isDisplayed;
     const DIALOG_TEXT_HTML = this.createDialogText(TIME_REMAINING / 1000)
       .element

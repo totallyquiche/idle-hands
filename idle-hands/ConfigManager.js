@@ -6,24 +6,24 @@ class ConfigManager {
     }
 
     this.applicationId = window.location.hostname;
+    this.cancelButtonText = 'Stay Logged In';
+    this.containerSelector = 'body';
     this.containerTitle = 'Session Expiration Warning Prompt';
     this.debug = false;
+    this.dialogText = 'Your session will expire in %time seconds due to inactivity.';
+    this.dialogTextAllowHtml = false;
     this.documentTitle = 'Session Expiration Warning';
+    this.duration = 30 * 1000; // 30 seconds;
     this.events =  ['click', 'keypress', 'scroll', 'wheel', 'mousewheel'];
+    this.headerText = 'Session Expiration Warning';
     this.heartbeatInterval = 60 * 1000; // 1 minute;
     this.heartbeatUrl = window.location.href;
+    this.logoutButtonText = 'Log Out Now';
     this.logoutDocumentTitle = 'Logging out...';
+    this.logoutText = 'Logging out...';
     this.maximumIdleDuration = 60 * 1000 * 60; // 1 hoor;
-    this.promptCancelButtonText = 'Stay Logged In';
-    this.promptContainerSelector = 'body';
-    this.promptDialogText = 'Your session will expire in %time seconds due to inactivity.';
-    this.promptDialogTextAllowHtml = false;
-    this.promptDuration = 30 * 1000; // 30 seconds;
-    this.promptHeaderText = 'Session Expiration Warning';
-    this.promptLogoutButtonText = 'Log Out Now';
-    this.promptLogoutText = 'Logging out...';
-    this.promptZindex = 9999;
     this.shiftFocus = true;
+    this.zIndex = 9999;
 
     for (const key in configValues) {
       this[key] = configValues[key];
