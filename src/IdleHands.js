@@ -33,7 +33,6 @@ class IdleHands {
     this.resetHandler = this.reset.bind(this);
     this.logoutHandler = this.logOut.bind(this);
     this.originalDocumentTitle = document.title;
-    this.originalActiveElement = (document.activeElement || document.body);
     this.parent = document.querySelector(this.config.containerSelector);
 
     this.storage.set('logoutUrl', this.config.logoutUrl);
@@ -120,7 +119,10 @@ class IdleHands {
     this.container.element.blur();
 
     this.log('Returning focus to original active element...');
-    this.originalActiveElement.focus();
+    if (this.originalActiveElement) {
+      this.originalActiveElement.focus();
+      this.originalActiveElement = undefined;
+    }
   }
 
   setDocumentEventListeners() {
@@ -249,6 +251,7 @@ class IdleHands {
 
       if (this.config.shiftFocus) {
         this.log('Shifting focus to cancel button...');
+        this.originalActiveElement = (document.activeElement || document.body);
         this.container
           .prompt
           .dialog
