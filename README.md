@@ -11,7 +11,7 @@ across one or more browser windows or tabs.
 ```html
 <script src="./dist/bundle.min.js"></script>
 <script>
-    new IdleHands({logoutUrl: 'https://abc.xyz/logout/'});
+  new IdleHands({ logoutUrl: "https://abc.xyz/logout/" });
 </script>
 ```
 
@@ -20,18 +20,18 @@ across one or more browser windows or tabs.
 ```html
 <script src="./dist/bundle.min.js"></script>
 <script>
-    new IdleHands({
-        logoutUrl: 'https://abc.xyz/logout/',
-        maximumIdleDuration: 60 * 1000 * 15, // 15 minutes
-        debug: true,
-    });
+  new IdleHands({
+    logoutUrl: "https://abc.xyz/logout/",
+    maximumIdleDuration: 60 * 1000 * 15, // 15 minutes
+    debug: true,
+  });
 </script>
 ```
 
 ## Settings
 
 | Name                  | Default Value                                                    | Description                                                                                                                          |
-|-----------------------|------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `applicationId`       | `window.location.hostname`                                       | Used to prevent conflicts with other site using Idle Hands (should be unique)                                                        |
 | `cancelButtonText`    | `'Stay Logged In'`                                               | The text to display on the button which hides the prompt and resets the timer                                                        |
 | `containerSelector`   | `'body'`                                                         | A selector for the element which the Idle Hands prompt should be attached to                                                         |
@@ -48,8 +48,18 @@ across one or more browser windows or tabs.
 | `logoutButtonText`    | `'Log Out Now'`                                                  | The text to display on the button which initiates logout                                                                             |
 | `logoutDocumentTitle` | `'Logging out...'`                                               | The HTML document title to use while redirecting for logout                                                                          |
 | `logoutText`          | `'Logging out...'`                                               | The text to display in the header of the prompt dialog box while logging out                                                         |
-| `logoutUrl`           | *(none)*                                                         | The URL to redirect to when logging out (required)                                                                                   |
+| `logoutUrl`           | _(none)_                                                         | The URL to redirect to when logging out (required)                                                                                   |
 | `manualLogoutUrl`     | Value of `logoutUrl`                                             | The URL to redirect to when the logout button is clicked                                                                             |
 | `maximumIdleDuration` | `60 * 1000 * 60`                                                 | The maximum amount of time which a user is allowed to be inactivty before being logged out by Idle Hands                             |
 | `shiftFocus`          | `true`                                                           | Controls whether focus should shift to the promopt dialog cancel button when the prompt is displayed                                 |
 | `zIndex`              | `9999`                                                           | The `z-index` of the prompt element                                                                                                  |
+
+## Distribution
+
+The project is bundled using [Rollup](https://rollupjs.org/):
+
+`pnpx rollup src/IdleHands.js --format umd --name IdleHands --file dist/bundle.js`
+
+and minified using [UglifyJS](https://github.com/mishoo/UglifyJS):
+
+`pnpx uglify-js dist/bundle.js --mangle --output dist/bundle.min.js`
